@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Database-enforced constraints:
+// - unique email addresses
+// - one buyer profile per user
+// - one seller profile per user
+// - foreign keys between users, assets, and contact requests
+// - optional asset context on contact requests
+//
+// Application/domain rules to enforce later:
+// - only SELLER users should own assets
+// - buyer/seller/manager capabilities should match the user's role
+// - moderation actions should suspend records rather than delete them
+
+enum UserRole {
+  BUYER
+  SELLER
+  MANAGER
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum AssetStatus {
+  DRAFT
+  PUBLISHED
+  SUSPENDED
+}
+
+enum ContactRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model User {
+  id                      String            @id @default(cuid())
+  name                    String
+  email                   String            @unique
+  role                    UserRole
+  status                  UserStatus        @default(ACTIVE)
+  company                 String
+  country                 String
+  avatarUrl               String?
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
+  buyerProfile            BuyerProfile?
+  sellerProfile           SellerProfile?
+  ownedAssets             Asset[]           @relation("SellerAssets")
+  sentContactRequests     ContactRequest[]   @relation("ContactRequestSender")
+  receivedContactRequests ContactRequest[]   @relation("ContactRequestRecipient")
+
+  @@index([role, status])
+  @@index([country])
+}
+
+model BuyerProfile {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  bio                String   @db.Text
+  investmentThesis   String   @db.Text
+  minInvestment      Decimal  @db.Decimal(18, 2)
+  maxInvestment      Decimal  @db.Decimal(18, 2)
+  preferredCountries String[]
+  preferredCategories String[]
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SellerProfile {
+  id                String @id @default(cuid())
+  userId            String @unique
+  bio               String @db.Text
+  companyDescription String @db.Text
+  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Asset {
+  id             String    @id @default(cuid())
+  sellerId       String
+  title          String
+  description    String    @db.Text
+  country        String
+  category       String
+  assetType      String
+  businessStatus String
+  askingPrice    Decimal   @db.Decimal(18, 2)
+  currency       String
+  employees      Int?
+  foundedYear    Int?
+  licenseType    String?
+  status         AssetStatus @default(DRAFT)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  seller         User        @relation("SellerAssets", fields: [sellerId], references: [id], onDelete: Restrict)
+  contactRequests ContactRequest[]
+
+  @@index([sellerId, status])
+  @@index([country, category, status])
+  @@index([category, status])
+}
+
+model ContactRequest {
+  id          String                @id @default(cuid())
+  senderId    String
+  recipientId String
+  assetId     String?
+  message     String                @db.Text
+  status      ContactRequestStatus  @default(PENDING)
+  createdAt   DateTime              @default(now())
+  sender      User                  @relation("ContactRequestSender", fields: [senderId], references: [id], onDelete: Restrict)
+  recipient   User                  @relation("ContactRequestRecipient", fields: [recipientId], references: [id], onDelete: Restrict)
+  asset       Asset?                @relation(fields: [assetId], references: [id], onDelete: SetNull)
+
+  @@index([senderId, status])
+  @@index([recipientId, status])
+  @@index([assetId])
+}
