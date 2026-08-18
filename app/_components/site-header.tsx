@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache";
-import Link from "next/link";
 
+import { RoleNavigation } from "@/app/_components/role-navigation";
 import { clearDemoUser, getCurrentUser, setDemoUser } from "@/lib/demo-session";
 import { getSeededDemoUsers } from "@/lib/demo-users";
 
@@ -153,50 +153,7 @@ export default async function SiteHeader() {
           </div>
 
           {activeNavigation ? (
-            <div className="flex flex-wrap gap-2">
-              {activeNavigation.navigation.map((item) =>
-                activeNavigation.role === "BUYER" && item === "Marketplace" ? (
-                  <Link
-                    key={item}
-                    href="/marketplace"
-                    className="rounded-full border border-stone-200 bg-stone-950 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-stone-800"
-                  >
-                    {item}
-                  </Link>
-                ) : activeNavigation.role === "SELLER" && item === "My Assets" ? (
-                  <Link
-                    key={item}
-                    href="/seller/assets"
-                    className="rounded-full border border-stone-200 bg-stone-950 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-stone-800"
-                  >
-                    {item}
-                  </Link>
-                ) : activeNavigation.role === "SELLER" && item === "Buyers" ? (
-                  <Link
-                    key={item}
-                    href="/buyers"
-                    className="rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 transition hover:bg-stone-100"
-                  >
-                    {item}
-                  </Link>
-                ) : activeNavigation.role === "BUYER" && item === "Profile" ? (
-                  <Link
-                    key={item}
-                    href="/profile"
-                    className="rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 transition hover:bg-stone-100"
-                  >
-                    {item}
-                  </Link>
-                ) : (
-                  <span
-                    key={item}
-                    className="rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700"
-                  >
-                    {item}
-                  </span>
-                ),
-              )}
-            </div>
+            <RoleNavigation role={activeNavigation.role} items={activeNavigation.navigation} />
           ) : (
             <p className="text-sm text-stone-600">
               Select a demo identity to view role-specific navigation.

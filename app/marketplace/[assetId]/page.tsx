@@ -2,11 +2,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 
+import { ContactRequestForm } from "@/components/contact/contact-request-form";
 import { AssetDetail } from "@/components/marketplace";
 import { PageHeader } from "@/components/shared";
 import { AuthorizationError, requireBuyerDemoUser } from "@/lib/authz";
 import { db } from "@/lib/db";
 import { marketplaceDetailAssetSelect } from "@/lib/marketplace/types";
+
+import { createBuyerAssetContactRequestAction } from "./contact-request-actions";
 
 const assetIdSchema = z.string().trim().min(1);
 
@@ -69,7 +72,7 @@ export default async function MarketplaceAssetPage({
         <PageHeader
           eyebrow="Buyer marketplace"
           title={asset.title}
-          description={`${asset.country} · ${asset.category} · ${asset.assetType}`}
+          description={`${asset.country} | ${asset.category} | ${asset.assetType}`}
           actions={
             <Link
               href="/marketplace"
@@ -80,7 +83,23 @@ export default async function MarketplaceAssetPage({
           }
         />
 
-        <AssetDetail asset={asset} />
+        <AssetDetail
+          asset={asset}
+          contactPanel={
+            <ContactRequestForm
+              action={createBuyerAssetContactRequestAction}
+              recipientName={asset.seller.name}
+              recipientCompany={asset.seller.company}
+              recipientRoleLabel="Active seller on the N5Deal marketplace."
+              contextLabel="Asset"
+              contextValue={asset.title}
+              contextFieldName="assetId"
+              contextFieldValue={asset.id}
+              submitLabel="Contact seller"
+              tone="dark"
+            />
+          }
+        />
       </div>
     </main>
   );

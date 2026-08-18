@@ -24,3 +24,17 @@ export function formatDate(value: string | Date, locale = "en-GB") {
     timeZone: "UTC",
   }).format(date);
 }
+
+export function formatDateTime(value: string | Date, locale = "en-GB") {
+  const date = value instanceof Date ? value : new Date(value);
+
+  return new Intl.DateTimeFormat(locale, {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  }).format(date);
+}

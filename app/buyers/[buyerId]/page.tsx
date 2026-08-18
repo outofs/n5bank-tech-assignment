@@ -2,12 +2,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 
+import { ContactRequestForm } from "@/components/contact/contact-request-form";
 import { PageHeader, StatusBadge } from "@/components/shared";
 import { SellerAccessState } from "@/components/seller";
 import { AuthorizationError, requireSellerDemoUser } from "@/lib/authz";
 import { buyerDetailSelect, hasBuyerProfile } from "@/lib/buyers/types";
-import { formatCurrency, formatDate } from "@/lib/formatters";
 import { db } from "@/lib/db";
+import { formatCurrency, formatDate } from "@/lib/formatters";
+
+import { createSellerBuyerContactRequestAction } from "./contact-request-actions";
 
 const buyerIdSchema = z.string().trim().min(1);
 
@@ -90,7 +93,7 @@ export default async function BuyerDetailPage({
         <PageHeader
           eyebrow="Seller directory"
           title={buyer.name}
-          description={`${buyer.company} · ${buyer.country}`}
+          description={`${buyer.company} | ${buyer.country}`}
           actions={
             <Link
               href="/buyers"
@@ -153,21 +156,17 @@ export default async function BuyerDetailPage({
           </section>
 
           <aside className="space-y-4">
-            <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500">
-                Contact action
-              </p>
-              <p className="mt-2 text-sm leading-6 text-stone-600">
-                Messaging is not wired yet. The button is present so the
-                interaction stays visible for the next step.
-              </p>
-              <button
-                type="button"
-                className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-xl bg-stone-950 px-4 text-sm font-semibold text-white transition hover:bg-stone-800"
-              >
-                Contact Buyer
-              </button>
-            </section>
+            <ContactRequestForm
+              action={createSellerBuyerContactRequestAction}
+              recipientName={buyer.name}
+              recipientCompany={buyer.company}
+              recipientRoleLabel="Active buyer in the seller directory."
+              contextLabel="Buyer"
+              contextValue={buyer.name}
+              contextFieldName="buyerId"
+              contextFieldValue={buyer.id}
+              submitLabel="Contact buyer"
+            />
 
             <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500">

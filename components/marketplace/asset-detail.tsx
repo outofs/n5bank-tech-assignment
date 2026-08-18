@@ -1,9 +1,12 @@
+import type { ReactNode } from "react";
+
 import { StatusBadge } from "@/components/shared";
 import { formatCurrency, formatDate } from "@/lib/formatters";
 import type { MarketplaceDetailAsset } from "@/lib/marketplace/types";
 
 export type AssetDetailProps = {
   asset: MarketplaceDetailAsset;
+  contactPanel: ReactNode;
 };
 
 function DetailRow({
@@ -23,7 +26,7 @@ function DetailRow({
   );
 }
 
-export function AssetDetail({ asset }: AssetDetailProps) {
+export function AssetDetail({ asset, contactPanel }: AssetDetailProps) {
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(320px,0.9fr)]">
       <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
@@ -101,24 +104,7 @@ export function AssetDetail({ asset }: AssetDetailProps) {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-stone-200 bg-stone-950 p-5 text-white shadow-sm sm:p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-            Next step
-          </p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight">
-            Contact the seller
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-stone-300">
-            The messaging flow is not implemented yet, but this CTA is already
-            structured for a future contact form or server action.
-          </p>
-          <button
-            type="button"
-            className="mt-4 inline-flex h-11 items-center justify-center rounded-xl bg-white px-4 text-sm font-semibold text-stone-950 transition hover:bg-stone-100"
-          >
-            Contact seller
-          </button>
-        </section>
+        {contactPanel}
 
         <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
