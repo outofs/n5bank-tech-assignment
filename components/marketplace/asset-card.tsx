@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { StatusBadge } from "@/components/shared";
 import { formatCurrency, formatDate } from "@/lib/formatters";
+import type { MarketplaceListAsset } from "@/lib/marketplace/types";
 
 function truncateDescription(description: string) {
   return description.length > 160
@@ -11,29 +12,10 @@ function truncateDescription(description: string) {
 
 export type AssetCardProps = {
   href: string;
-  title: string;
-  country: string;
-  category: string;
-  askingPrice: string | number | { toString(): string };
-  currency: string;
-  businessStatus: string;
-  licenseType: string | null;
-  description: string;
-  createdAt: Date;
+  asset: MarketplaceListAsset;
 };
 
-export function AssetCard({
-  href,
-  title,
-  country,
-  category,
-  askingPrice,
-  currency,
-  businessStatus,
-  licenseType,
-  description,
-  createdAt,
-}: AssetCardProps) {
+export function AssetCard({ href, asset }: AssetCardProps) {
   return (
     <Link
       href={href}
@@ -44,11 +26,11 @@ export function AssetCard({
           <div className="flex flex-wrap gap-2">
             <StatusBadge status="PUBLISHED" />
             <span className="rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-stone-600">
-              {country}
+              {asset.country}
             </span>
           </div>
           <h2 className="text-lg font-semibold tracking-tight text-stone-950">
-            {title}
+            {asset.title}
           </h2>
         </div>
 
@@ -59,13 +41,13 @@ export function AssetCard({
 
       <div className="mt-4 flex flex-1 flex-col space-y-4">
         <div className="flex flex-wrap items-center gap-2 text-sm text-stone-600">
-          <span>{category}</span>
+          <span>{asset.category}</span>
           <span className="text-stone-300">|</span>
-          <span>{businessStatus}</span>
-          {licenseType ? (
+          <span>{asset.businessStatus}</span>
+          {asset.licenseType ? (
             <>
               <span className="text-stone-300">|</span>
-              <span>{licenseType}</span>
+              <span>{asset.licenseType}</span>
             </>
           ) : null}
         </div>
@@ -76,16 +58,16 @@ export function AssetCard({
               Asking price
             </p>
             <p className="mt-1 text-xl font-semibold text-stone-950">
-              {formatCurrency(askingPrice, currency)}
+              {formatCurrency(asset.askingPrice, asset.currency)}
             </p>
           </div>
           <p className="text-right text-xs uppercase tracking-[0.18em] text-stone-500">
-            Created {formatDate(createdAt)}
+            Created {formatDate(asset.createdAt)}
           </p>
         </div>
 
         <p className="min-h-12 text-sm leading-6 text-stone-600">
-          {truncateDescription(description)}
+          {truncateDescription(asset.description)}
         </p>
       </div>
     </Link>

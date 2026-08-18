@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 function splitProfileList(value: string) {
@@ -61,6 +62,30 @@ export type BuyerProfileEditState = {
   errors: BuyerProfileEditErrors;
 };
 
+export type BuyerProfileEditFormValues = {
+  name: string;
+  company: string;
+  country: string;
+  bio: string;
+  investmentThesis: string;
+  minInvestment: string;
+  maxInvestment: string;
+  preferredCountries: string;
+  preferredCategories: string;
+};
+
+type BuyerProfileEditValueSource = {
+  name: string;
+  company: string;
+  country: string;
+  bio: string;
+  investmentThesis: string;
+  minInvestment: Prisma.Decimal | number | string;
+  maxInvestment: Prisma.Decimal | number | string;
+  preferredCountries: string[];
+  preferredCategories: string[];
+};
+
 export const emptyBuyerProfileEditState: BuyerProfileEditState = {
   errors: {},
 };
@@ -100,17 +125,7 @@ export function createProfileEditValues({
   maxInvestment,
   preferredCountries,
   preferredCategories,
-}: {
-  name: string;
-  company: string;
-  country: string;
-  bio: string;
-  investmentThesis: string;
-  minInvestment: string | number | { toString(): string };
-  maxInvestment: string | number | { toString(): string };
-  preferredCountries: string[];
-  preferredCategories: string[];
-}) {
+}: BuyerProfileEditValueSource): BuyerProfileEditFormValues {
   return {
     name,
     company,

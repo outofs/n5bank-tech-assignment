@@ -1,23 +1,9 @@
 import { StatusBadge } from "@/components/shared";
 import { formatCurrency, formatDate } from "@/lib/formatters";
+import type { MarketplaceDetailAsset } from "@/lib/marketplace/types";
 
 export type AssetDetailProps = {
-  title: string;
-  askingPrice: string | number | { toString(): string };
-  currency: string;
-  country: string;
-  category: string;
-  assetType: string;
-  businessStatus: string;
-  description: string;
-  employees: number | null;
-  foundedYear: number | null;
-  licenseType: string | null;
-  createdAt: Date;
-  seller: {
-    name: string;
-    company: string;
-  };
+  asset: MarketplaceDetailAsset;
 };
 
 function DetailRow({
@@ -37,44 +23,30 @@ function DetailRow({
   );
 }
 
-export function AssetDetail({
-  title,
-  askingPrice,
-  currency,
-  country,
-  category,
-  assetType,
-  businessStatus,
-  description,
-  employees,
-  foundedYear,
-  licenseType,
-  createdAt,
-  seller,
-}: AssetDetailProps) {
+export function AssetDetail({ asset }: AssetDetailProps) {
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(320px,0.9fr)]">
       <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
         <div className="flex flex-wrap items-center gap-2">
           <StatusBadge status="PUBLISHED" />
           <span className="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-stone-600">
-            {country}
+            {asset.country}
           </span>
           <span className="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-stone-600">
-            {category}
+            {asset.category}
           </span>
           <span className="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-stone-600">
-            {assetType}
+            {asset.assetType}
           </span>
         </div>
 
         <div className="mt-4 flex flex-col gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-2">
             <h1 className="text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-              {title}
+              {asset.title}
             </h1>
             <p className="max-w-3xl text-sm leading-6 text-stone-600 sm:text-base">
-              {description}
+              {asset.description}
             </p>
           </div>
 
@@ -83,31 +55,31 @@ export function AssetDetail({
               Asking price
             </p>
             <p className="mt-1 text-2xl font-semibold text-stone-950">
-              {formatCurrency(askingPrice, currency)}
+              {formatCurrency(asset.askingPrice, asset.currency)}
             </p>
             <p className="mt-1 text-xs uppercase tracking-[0.18em] text-stone-500">
-              Created {formatDate(createdAt)}
+              Created {formatDate(asset.createdAt)}
             </p>
           </div>
         </div>
 
         <div className="mt-6 space-y-4">
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            <DetailRow label="Business status" value={businessStatus} />
-            <DetailRow label="Country" value={country} />
-            <DetailRow label="Category" value={category} />
-            <DetailRow label="Asset type" value={assetType} />
-            {employees !== null ? (
+            <DetailRow label="Business status" value={asset.businessStatus} />
+            <DetailRow label="Country" value={asset.country} />
+            <DetailRow label="Category" value={asset.category} />
+            <DetailRow label="Asset type" value={asset.assetType} />
+            {asset.employees !== null ? (
               <DetailRow
                 label="Employees"
-                value={employees.toLocaleString("en-US")}
+                value={asset.employees.toLocaleString("en-US")}
               />
             ) : null}
-            {foundedYear !== null ? (
-              <DetailRow label="Founded year" value={String(foundedYear)} />
+            {asset.foundedYear !== null ? (
+              <DetailRow label="Founded year" value={String(asset.foundedYear)} />
             ) : null}
-            {licenseType ? (
-              <DetailRow label="License type" value={licenseType} />
+            {asset.licenseType ? (
+              <DetailRow label="License type" value={asset.licenseType} />
             ) : null}
           </div>
         </div>
@@ -120,9 +92,9 @@ export function AssetDetail({
           </p>
           <div className="mt-3 space-y-2">
             <p className="text-xl font-semibold tracking-tight text-stone-950">
-              {seller.name}
+              {asset.seller.name}
             </p>
-            <p className="text-sm text-stone-600">{seller.company}</p>
+            <p className="text-sm text-stone-600">{asset.seller.company}</p>
             <p className="text-sm text-stone-600">
               Active seller on the N5Deal marketplace.
             </p>

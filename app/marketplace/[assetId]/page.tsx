@@ -6,6 +6,7 @@ import { AssetDetail } from "@/components/marketplace";
 import { PageHeader } from "@/components/shared";
 import { AuthorizationError, requireBuyerDemoUser } from "@/lib/authz";
 import { db } from "@/lib/db";
+import { marketplaceDetailAssetSelect } from "@/lib/marketplace/types";
 
 const assetIdSchema = z.string().trim().min(1);
 
@@ -55,27 +56,7 @@ export default async function MarketplaceAssetPage({
         status: "ACTIVE",
       },
     },
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      country: true,
-      category: true,
-      assetType: true,
-      businessStatus: true,
-      askingPrice: true,
-      currency: true,
-      employees: true,
-      foundedYear: true,
-      licenseType: true,
-      createdAt: true,
-      seller: {
-        select: {
-          name: true,
-          company: true,
-        },
-      },
-    },
+    select: marketplaceDetailAssetSelect,
   });
 
   if (!asset) {
@@ -99,24 +80,7 @@ export default async function MarketplaceAssetPage({
           }
         />
 
-        <AssetDetail
-          title={asset.title}
-          askingPrice={asset.askingPrice}
-          currency={asset.currency}
-          country={asset.country}
-          category={asset.category}
-          assetType={asset.assetType}
-          businessStatus={asset.businessStatus}
-          description={asset.description}
-          employees={asset.employees}
-          foundedYear={asset.foundedYear}
-          licenseType={asset.licenseType}
-          createdAt={asset.createdAt}
-          seller={{
-            name: asset.seller.name,
-            company: asset.seller.company,
-          }}
-        />
+        <AssetDetail asset={asset} />
       </div>
     </main>
   );

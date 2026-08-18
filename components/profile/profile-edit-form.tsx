@@ -7,20 +7,9 @@ import { useFormStatus } from "react-dom";
 import {
   emptyBuyerProfileEditState,
   type BuyerProfileEditState,
+  type BuyerProfileEditFormValues,
 } from "@/lib/buyer-profile-form";
 import { updateBuyerProfileAction } from "@/app/profile/edit/actions";
-
-type ProfileEditFormValues = {
-  name: string;
-  company: string;
-  country: string;
-  bio: string;
-  investmentThesis: string;
-  minInvestment: string;
-  maxInvestment: string;
-  preferredCountries: string;
-  preferredCategories: string;
-};
 
 const INPUT_CLASS =
   "h-11 w-full rounded-xl border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition placeholder:text-stone-400 focus:border-stone-500";
@@ -73,7 +62,7 @@ export function ProfileEditForm({
   initialValues,
   state,
 }: {
-  initialValues: ProfileEditFormValues;
+  initialValues: BuyerProfileEditFormValues;
   state?: BuyerProfileEditState;
 }) {
   const [values, setValues] = useState(initialValues);
@@ -254,38 +243,4 @@ export function ProfileEditForm({
       </div>
     </form>
   );
-}
-
-export function createProfileEditValues({
-  name,
-  company,
-  country,
-  bio,
-  investmentThesis,
-  minInvestment,
-  maxInvestment,
-  preferredCountries,
-  preferredCategories,
-}: {
-  name: string;
-  company: string;
-  country: string;
-  bio: string;
-  investmentThesis: string;
-  minInvestment: string | number | { toString(): string };
-  maxInvestment: string | number | { toString(): string };
-  preferredCountries: string[];
-  preferredCategories: string[];
-}): ProfileEditFormValues {
-  return {
-    name,
-    company,
-    country,
-    bio,
-    investmentThesis,
-    minInvestment: minInvestment.toString(),
-    maxInvestment: maxInvestment.toString(),
-    preferredCountries: preferredCountries.join("\n"),
-    preferredCategories: preferredCategories.join("\n"),
-  };
 }

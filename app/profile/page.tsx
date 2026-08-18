@@ -1,7 +1,11 @@
 import Link from "next/link";
 
 import { EmptyState, PageHeader } from "@/components/shared";
-import { AuthorizationError, requireBuyerDemoUser } from "@/lib/authz";
+import {
+  AuthorizationError,
+  requireBuyerDemoUser,
+  type BuyerDemoUser,
+} from "@/lib/authz";
 import { formatCurrency } from "@/lib/formatters";
 
 type ProfilePageSearchParams = Promise<{
@@ -32,7 +36,7 @@ export default async function ProfilePage({
 }: {
   searchParams: ProfilePageSearchParams;
 }) {
-  let currentUser: Awaited<ReturnType<typeof requireBuyerDemoUser>>;
+  let currentUser: BuyerDemoUser;
 
   try {
     currentUser = await requireBuyerDemoUser();

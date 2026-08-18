@@ -5,6 +5,10 @@ import { EmptyState, PageHeader } from "@/components/shared";
 import { AssetCard, FilterSelect, TextField } from "@/components/marketplace";
 import { AuthorizationError, requireBuyerDemoUser } from "@/lib/authz";
 import { db } from "@/lib/db";
+import {
+  marketplaceFilterOptionSelect,
+  marketplaceListAssetSelect,
+} from "@/lib/marketplace/types";
 
 type MarketplaceSearchParams = Promise<{
   q?: string | string[];
@@ -91,11 +95,7 @@ export default async function MarketplacePage({
       status: "PUBLISHED",
       seller: { status: "ACTIVE" },
     },
-    select: {
-      country: true,
-      category: true,
-      businessStatus: true,
-    },
+    select: marketplaceFilterOptionSelect,
   });
 
   const countries = uniqueSorted(baseMarketplaceAssets.map((asset) => asset.country));
@@ -173,18 +173,7 @@ export default async function MarketplacePage({
 
   const assets = await db.asset.findMany({
     where,
-    select: {
-      id: true,
-      title: true,
-      country: true,
-      category: true,
-      askingPrice: true,
-      currency: true,
-      businessStatus: true,
-      licenseType: true,
-      description: true,
-      createdAt: true,
-    },
+    select: marketplaceListAssetSelect,
     orderBy,
   });
 
@@ -347,15 +336,7 @@ export default async function MarketplacePage({
               <AssetCard
                 key={asset.id}
                 href={`/marketplace/${asset.id}`}
-                title={asset.title}
-                country={asset.country}
-                category={asset.category}
-                askingPrice={asset.askingPrice}
-                currency={asset.currency}
-                businessStatus={asset.businessStatus}
-                licenseType={asset.licenseType}
-                description={asset.description}
-                createdAt={asset.createdAt}
+                asset={asset}
               />
             ))}
           </section>

@@ -2,11 +2,15 @@ import Link from "next/link";
 
 import { EmptyState, PageHeader } from "@/components/shared";
 import { ProfileEditForm } from "@/components/profile/profile-edit-form";
-import { AuthorizationError, requireBuyerDemoUser } from "@/lib/authz";
+import {
+  AuthorizationError,
+  requireBuyerDemoUser,
+  type BuyerDemoUser,
+} from "@/lib/authz";
 import { createProfileEditValues } from "@/lib/buyer-profile-form";
 
 export default async function ProfileEditPage() {
-  let currentUser: Awaited<ReturnType<typeof requireBuyerDemoUser>>;
+  let currentUser: BuyerDemoUser;
 
   try {
     currentUser = await requireBuyerDemoUser();

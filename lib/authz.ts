@@ -1,7 +1,29 @@
 import "server-only";
 
+import type { CurrentDemoUser } from "@/lib/demo-session";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/demo-session";
+
+export type ActiveDemoUser = CurrentDemoUser & { status: "ACTIVE" };
+export type BuyerDemoUser = ActiveDemoUser & { role: "BUYER" };
+export type SellerDemoUser = ActiveDemoUser & { role: "SELLER" };
+export type ManagerDemoUser = ActiveDemoUser & { role: "MANAGER" };
+
+function isActiveDemoUser(user: CurrentDemoUser): user is ActiveDemoUser {
+  return user.status === "ACTIVE";
+}
+
+function isBuyerDemoUser(user: ActiveDemoUser): user is BuyerDemoUser {
+  return user.role === "BUYER";
+}
+
+function isSellerDemoUser(user: ActiveDemoUser): user is SellerDemoUser {
+  return user.role === "SELLER";
+}
+
+function isManagerDemoUser(user: ActiveDemoUser): user is ManagerDemoUser {
+  return user.role === "MANAGER";
+}
 
 export class AuthorizationError extends Error {
   constructor(message: string) {
@@ -10,7 +32,7 @@ export class AuthorizationError extends Error {
   }
 }
 
-export async function requireSignedInDemoUser() {
+export async function requireSignedInDemoUser(): Promise<CurrentDemoUser> {
   const user = await getCurrentUser();
 
   if (!user) {
@@ -20,40 +42,40 @@ export async function requireSignedInDemoUser() {
   return user;
 }
 
-export async function requireActiveDemoUser() {
+export async function requireActiveDemoUser(): Promise<ActiveDemoUser> {
   const user = await requireSignedInDemoUser();
 
-  if (user.status !== "ACTIVE") {
+  if (!isActiveDemoUser(user)) {
     throw new AuthorizationError("This demo user is suspended.");
   }
 
   return user;
 }
 
-export async function requireBuyerDemoUser() {
+export async function requireBuyerDemoUser(): Promise<BuyerDemoUser> {
   const user = await requireActiveDemoUser();
 
-  if (user.role !== "BUYER") {
+  if (!isBuyerDemoUser(user)) {
     throw new AuthorizationError("Buyer access required.");
   }
 
   return user;
 }
 
-export async function requireSellerDemoUser() {
+export async function requireSellerDemoUser(): Promise<SellerDemoUser> {
   const user = await requireActiveDemoUser();
 
-  if (user.role !== "SELLER") {
+  if (!isSellerDemoUser(user)) {
     throw new AuthorizationError("Seller access required.");
   }
 
   return user;
 }
 
-export async function requireManagerDemoUser() {
+export async function requireManagerDemoUser(): Promise<ManagerDemoUser> {
   const user = await requireActiveDemoUser();
 
-  if (user.role !== "MANAGER") {
+  if (!isManagerDemoUser(user)) {
     throw new AuthorizationError("Manager access required.");
   }
 
