@@ -11,13 +11,20 @@ import { PageHeader } from "@/components/shared";
 import { AuthorizationError, requireManagerDemoUser } from "@/lib/authz";
 import { db } from "@/lib/db";
 import { suspendAdminAssetAction, restoreAdminAssetAction } from "./actions";
-import { adminAssetModerationSelect, uniqueSorted } from "@/lib/admin-assets";
+import { adminAssetModerationSelect } from "@/lib/admin-assets";
+import {
+  buildCanonicalCountryOptions,
+  buildNormalizedFilterOptions,
+  sanitizeOptionValue,
+} from "@/lib/filter-options";
+import { SELLER_OPERATING_STATUSES } from "@/lib/seller-asset-form";
 
 type AdminAssetsSearchParams = Promise<{
   q?: string | string[];
   country?: string | string[];
   category?: string | string[];
   status?: string | string[];
+  businessStatus?: string | string[];
   notice?: string | string[];
   noticeTone?: string | string[];
 }>;
@@ -47,12 +54,16 @@ function buildReturnTo(params: {
   country: string;
   category: string;
   status: string;
+  businessStatus: string;
 }) {
   const searchParams = new URLSearchParams();
   if (params.q) searchParams.set("q", params.q);
   if (params.country) searchParams.set("country", params.country);
   if (params.category) searchParams.set("category", params.category);
   if (params.status) searchParams.set("status", params.status);
+  if (params.businessStatus) {
+    searchParams.set("businessStatus", params.businessStatus);
+  }
   const queryString = searchParams.toString();
   return queryString ? `/admin/assets?${queryString}` : "/admin/assets";
 }
@@ -84,6 +95,7 @@ export default async function AdminAssetsPage({
     country: rawCountry,
     category: rawCategory,
     status: rawStatus,
+    businessStatus: rawBusinessStatus,
     notice: rawNotice,
     noticeTone: rawNoticeTone,
   } = await searchParams;
@@ -92,6 +104,7 @@ export default async function AdminAssetsPage({
   const status = normalizeStatus(rawStatus);
   const countryParam = trimParam(rawCountry);
   const categoryParam = trimParam(rawCategory);
+  const businessStatusParam = trimParam(rawBusinessStatus);
   const notice = trimParam(rawNotice);
   const noticeTone = normalizeTone(rawNoticeTone);
 
@@ -102,10 +115,22 @@ export default async function AdminAssetsPage({
     },
   });
 
-  const countries = uniqueSorted(baseAssets.map((asset) => asset.country));
-  const categories = uniqueSorted(baseAssets.map((asset) => asset.category));
-  const country = countries.includes(countryParam) ? countryParam : "";
-  const category = categories.includes(categoryParam) ? categoryParam : "";
+  const countryOptions = buildCanonicalCountryOptions(
+    baseAssets.map((asset) => asset.country),
+  );
+  const categoryOptionGroup = buildNormalizedFilterOptions(
+    baseAssets.map((asset) => asset.category),
+  );
+  const operatingStatusOptions = SELLER_OPERATING_STATUSES.map((value) => ({
+    value,
+    label: value,
+  }));
+  const country = sanitizeOptionValue(countryParam, countryOptions);
+  const category = sanitizeOptionValue(categoryParam, categoryOptionGroup.options);
+  const businessStatus = sanitizeOptionValue(
+    businessStatusParam,
+    operatingStatusOptions,
+  );
 
   const where: Prisma.AssetWhereInput = {};
   const andClauses: Prisma.AssetWhereInput[] = [];
@@ -160,11 +185,19 @@ export default async function AdminAssetsPage({
   }
 
   if (category) {
-    andClauses.push({ category });
+    andClauses.push({
+      category: {
+        in: categoryOptionGroup.valuesByOption.get(category) ?? [category],
+      },
+    });
   }
 
   if (status) {
     andClauses.push({ status: status as "DRAFT" | "PUBLISHED" | "SUSPENDED" });
+  }
+
+  if (businessStatus) {
+    andClauses.push({ businessStatus });
   }
 
   if (andClauses.length > 0) {
@@ -178,8 +211,16 @@ export default async function AdminAssetsPage({
   });
 
   const visibleCount = assets.length;
-  const hasActiveFilters = Boolean(query || country || category || status);
-  const returnTo = buildReturnTo({ q: query, country, category, status });
+  const hasActiveFilters = Boolean(
+    query || country || category || status || businessStatus,
+  );
+  const returnTo = buildReturnTo({
+    q: query,
+    country,
+    category,
+    status,
+    businessStatus,
+  });
 
   return (
     <main className="bg-stone-50/80">
@@ -215,8 +256,9 @@ export default async function AdminAssetsPage({
           country={country}
           category={category}
           status={status}
-          countries={countries}
-          categories={categories}
+          businessStatus={businessStatus}
+          countries={countryOptions.map((option) => option.value)}
+          categories={categoryOptionGroup.options.map((option) => option.value)}
           hasActiveFilters={hasActiveFilters}
         />
 

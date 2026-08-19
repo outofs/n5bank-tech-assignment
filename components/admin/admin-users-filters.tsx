@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { FilterSelect } from "@/components/marketplace";
+import { ADMIN_USER_ROLES, ADMIN_USER_STATUSES } from "@/lib/admin-users";
 
 const FIELD_LABEL_CLASS =
   "text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500";
@@ -42,10 +43,10 @@ export function AdminUsersFilters({
           label="Role"
           name="role"
           defaultValue={role}
-          options={[
-            { value: "BUYER", label: "Buyer" },
-            { value: "SELLER", label: "Seller" },
-          ]}
+          options={ADMIN_USER_ROLES.map((value) => ({
+            value,
+            label: value === "BUYER" ? "Buyer" : "Seller",
+          }))}
           placeholderLabel="All roles"
         />
 
@@ -61,10 +62,10 @@ export function AdminUsersFilters({
           label="Status"
           name="status"
           defaultValue={status}
-          options={[
-            { value: "ACTIVE", label: "Active" },
-            { value: "SUSPENDED", label: "Suspended" },
-          ]}
+          options={ADMIN_USER_STATUSES.map((value) => ({
+            value,
+            label: value === "ACTIVE" ? "Active" : "Suspended",
+          }))}
           placeholderLabel="All statuses"
         />
 

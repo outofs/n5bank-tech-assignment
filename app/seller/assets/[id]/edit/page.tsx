@@ -10,6 +10,7 @@ import {
   createSellerAssetFormValues,
   sellerAssetFormAssetSelect,
 } from "@/lib/seller-asset-form";
+import { buildSellerAssetSelectOptions } from "@/lib/seller-asset-options";
 
 type SellerAssetEditSearchParams = Promise<{
   updated?: string | string[];
@@ -62,10 +63,19 @@ export default async function SellerAssetEditPage({
     throw error;
   }
 
-  const asset = await db.asset.findUnique({
-    where: { id: parsedAssetId.data },
-    select: sellerAssetFormAssetSelect,
-  });
+  const [asset, assetRows] = await Promise.all([
+    db.asset.findUnique({
+      where: { id: parsedAssetId.data },
+      select: sellerAssetFormAssetSelect,
+    }),
+    db.asset.findMany({
+      select: {
+        category: true,
+        assetType: true,
+        licenseType: true,
+      },
+    }),
+  ]);
 
   if (!asset) {
     notFound();
@@ -77,6 +87,7 @@ export default async function SellerAssetEditPage({
 
   const formMessage = statusMessage(status ?? "", updated);
   const initialValues = createSellerAssetFormValues(asset);
+  const assetSelectOptions = buildSellerAssetSelectOptions(assetRows);
 
   return (
     <main className="bg-stone-50/80">
@@ -105,6 +116,9 @@ export default async function SellerAssetEditPage({
               currentStatus={asset.status}
               initialValues={initialValues}
               cancelHref="/seller/assets"
+              categoryOptions={assetSelectOptions.categoryOptions}
+              assetTypeOptions={assetSelectOptions.assetTypeOptions}
+              licenseTypeOptions={assetSelectOptions.licenseTypeOptions}
             />
           </section>
 

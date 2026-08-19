@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { buyerProfileEditSchema } from "../lib/buyer-profile-form";
+import {
+  buyerProfileEditSchema,
+  splitProfileList,
+} from "../lib/buyer-profile-form";
 import {
   buyerAssetContactRequestSchema,
   contactRequestMessageSchema,
@@ -29,7 +32,7 @@ const validSellerAssetInput = {
   country: "Lithuania",
   category: "Payments",
   assetType: "License",
-  businessStatus: "Operating",
+  businessStatus: "Active",
   askingPrice: "2500000",
   currency: "EUR",
   employees: "",
@@ -48,6 +51,13 @@ describe("buyer profile validation", () => {
     expect(result.maxInvestment).toBe(5000000);
     expect(result.preferredCountries).toEqual(["Poland", "Lithuania"]);
     expect(result.preferredCategories).toEqual(["Payments", "EMI"]);
+  });
+
+  it("deduplicates list inputs case-insensitively and trims whitespace", () => {
+    expect(splitProfileList("  Payments \n payments,  EMI  , EMI ")).toEqual([
+      "Payments",
+      "EMI",
+    ]);
   });
 
   it("rejects buyer profile ranges where minimum exceeds maximum", () => {
@@ -78,6 +88,29 @@ describe("buyer profile validation", () => {
       );
     }
   });
+
+  it("rejects unsupported buyer locations", () => {
+    const result = buyerProfileEditSchema.safeParse({
+      ...validBuyerProfileInput,
+      country: "Atlantis",
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.country?.[0]).toBe(
+        "Buyer location must use a supported country name.",
+      );
+    }
+  });
+
+  it("accepts supported target countries including United States", () => {
+    const result = buyerProfileEditSchema.parse({
+      ...validBuyerProfileInput,
+      preferredCountries: "United States\nPoland",
+    });
+
+    expect(result.preferredCountries).toEqual(["United States", "Poland"]);
+  });
 });
 
 describe("seller asset validation", () => {
@@ -88,6 +121,7 @@ describe("seller asset validation", () => {
     expect(result.employees).toBeUndefined();
     expect(result.foundedYear).toBeUndefined();
     expect(result.licenseType).toBeUndefined();
+    expect(result.businessStatus).toBe("Active");
   });
 
   it("rejects seller assets without a positive asking price", () => {
@@ -100,6 +134,20 @@ describe("seller asset validation", () => {
     if (!result.success) {
       expect(result.error.flatten().fieldErrors.askingPrice?.[0]).toBe(
         "Asking price must be greater than 0",
+      );
+    }
+  });
+
+  it("rejects unsupported operating statuses", () => {
+    const result = sellerAssetCreateSchema.safeParse({
+      ...validSellerAssetInput,
+      businessStatus: "Operating",
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.businessStatus?.[0]).toBe(
+        "Operating status must be Active or Inactive.",
       );
     }
   });

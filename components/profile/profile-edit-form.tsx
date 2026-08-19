@@ -6,10 +6,12 @@ import { useFormStatus } from "react-dom";
 
 import {
   emptyBuyerProfileEditState,
+  splitProfileList,
   type BuyerProfileEditState,
   type BuyerProfileEditFormValues,
 } from "@/lib/buyer-profile-form";
 import { updateBuyerProfileAction } from "@/app/profile/edit/actions";
+import { ProfilePreferenceSelects } from "@/components/profile/profile-preference-selects";
 
 const INPUT_CLASS =
   "h-11 w-full rounded-xl border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition placeholder:text-stone-400 focus:border-stone-500";
@@ -60,12 +62,21 @@ function FormField({
 
 export function ProfileEditForm({
   initialValues,
+  categoryOptions,
   state,
 }: {
   initialValues: BuyerProfileEditFormValues;
+  categoryOptions: string[];
   state?: BuyerProfileEditState;
 }) {
   const [values, setValues] = useState(initialValues);
+  const [country, setCountry] = useState(initialValues.country);
+  const [preferredCountries, setPreferredCountries] = useState(() =>
+    splitProfileList(initialValues.preferredCountries),
+  );
+  const [preferredCategories, setPreferredCategories] = useState(() =>
+    splitProfileList(initialValues.preferredCategories),
+  );
   const [actionState, formAction] = useActionState(
     updateBuyerProfileAction,
     state ?? emptyBuyerProfileEditState,
@@ -101,20 +112,6 @@ export function ProfileEditForm({
               setValues((current) => ({
                 ...current,
                 company: event.target.value,
-              }))
-            }
-            className={INPUT_CLASS}
-          />
-        </FormField>
-
-        <FormField label="Country" error={currentState.errors.country}>
-          <input
-            name="country"
-            value={values.country}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                country: event.target.value,
               }))
             }
             className={INPUT_CLASS}
@@ -192,45 +189,18 @@ export function ProfileEditForm({
         />
       </FormField>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <FormField
-          label="Preferred countries"
-          error={currentState.errors.preferredCountries}
-        >
-          <textarea
-            name="preferredCountries"
-            rows={5}
-            value={values.preferredCountries}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                preferredCountries: event.target.value,
-              }))
-            }
-            placeholder="One per line or comma-separated"
-            className={TEXTAREA_CLASS}
-          />
-        </FormField>
-
-        <FormField
-          label="Preferred categories"
-          error={currentState.errors.preferredCategories}
-        >
-          <textarea
-            name="preferredCategories"
-            rows={5}
-            value={values.preferredCategories}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                preferredCategories: event.target.value,
-              }))
-            }
-            placeholder="One per line or comma-separated"
-            className={TEXTAREA_CLASS}
-          />
-        </FormField>
-      </div>
+      <ProfilePreferenceSelects
+        country={country}
+        preferredCountries={preferredCountries}
+        preferredCategories={preferredCategories}
+        countryError={currentState.errors.country}
+        preferredCountriesError={currentState.errors.preferredCountries}
+        preferredCategoriesError={currentState.errors.preferredCategories}
+        categoryOptions={categoryOptions}
+        onCountryChange={setCountry}
+        onPreferredCountriesChange={setPreferredCountries}
+        onPreferredCategoriesChange={setPreferredCategories}
+      />
 
       <div className="flex flex-wrap items-center gap-3 border-t border-stone-200 pt-4">
         <SubmitButton />

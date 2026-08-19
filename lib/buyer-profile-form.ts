@@ -1,15 +1,33 @@
 import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 
-function splitProfileList(value: string) {
-  return Array.from(
-    new Set(
-      value
-        .split(/[\n,]/)
-        .map((item) => item.trim())
-        .filter(Boolean),
-    ),
-  );
+import { COUNTRY_OPTIONS } from "./countries";
+import { normalizeSelectValue } from "./select-options";
+
+export function normalizeProfileListItem(value: string) {
+  return normalizeSelectValue(value);
+}
+
+export function splitProfileList(value: string) {
+  const deduped = new Map<string, string>();
+
+  for (const item of value.split(/[\n,]/)) {
+    const normalized = normalizeProfileListItem(item);
+    if (!normalized) {
+      continue;
+    }
+
+    const key = normalized.toLocaleLowerCase();
+    if (!deduped.has(key)) {
+      deduped.set(key, normalized);
+    }
+  }
+
+  return Array.from(deduped.values());
+}
+
+export function joinProfileList(values: string[]) {
+  return values.join("\n");
 }
 
 function moneyField(label: string) {
@@ -33,12 +51,30 @@ export const buyerProfileEditSchema = z
   .object({
     name: requiredText("Name"),
     company: requiredText("Company"),
-    country: requiredText("Country"),
+    country: z
+      .string()
+      .trim()
+      .min(1, "Buyer location is required")
+      .refine(
+        (value) =>
+          COUNTRY_OPTIONS.includes(value as (typeof COUNTRY_OPTIONS)[number]),
+        {
+          message: "Buyer location must use a supported country name.",
+        },
+      ),
     bio: requiredText("Bio"),
     investmentThesis: requiredText("Investment thesis"),
     minInvestment: moneyField("Minimum investment"),
     maxInvestment: moneyField("Maximum investment"),
-    preferredCountries: z.string().transform(splitProfileList),
+    preferredCountries: z
+      .string()
+      .transform(splitProfileList)
+      .refine(
+        (values) => values.every((value) => COUNTRY_OPTIONS.includes(value as (typeof COUNTRY_OPTIONS)[number])),
+        {
+          message: "Preferred countries must use supported country names.",
+        },
+      ),
     preferredCategories: z.string().transform(splitProfileList),
   })
   .superRefine((value, ctx) => {
@@ -109,10 +145,6 @@ export function mapBuyerProfileEditErrors(
       form: flattened.formErrors[0],
     },
   };
-}
-
-export function joinProfileList(values: string[]) {
-  return values.join("\n");
 }
 
 export function createProfileEditValues({

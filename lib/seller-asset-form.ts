@@ -1,12 +1,16 @@
 import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 
+import { COUNTRY_OPTIONS } from "./countries";
+import { normalizeSelectValue } from "./select-options";
+
 export const SELLER_ASSET_CURRENCIES = ["EUR", "GBP", "USD", "SGD", "AED"] as const;
 export const SELLER_ASSET_STATUSES = [
   "DRAFT",
   "PUBLISHED",
   "SUSPENDED",
 ] as const;
+export const SELLER_OPERATING_STATUSES = ["Active", "Inactive"] as const;
 
 export const sellerAssetCreateIntentSchema = z.enum(["draft", "publish"]);
 export const sellerAssetEditIntentSchema = z.enum([
@@ -114,10 +118,36 @@ export const sellerAssetCreateSchema = z
   .object({
     title: requiredText("Title"),
     description: requiredText("Description"),
-    country: requiredText("Country"),
+    country: z.preprocess(
+      (value) => (typeof value === "string" ? normalizeSelectValue(value) : ""),
+      z
+        .string()
+        .min(1, "Country is required")
+        .refine(
+          (value) =>
+            COUNTRY_OPTIONS.includes(value as (typeof COUNTRY_OPTIONS)[number]),
+          {
+            message: "Country must use a supported country name.",
+          },
+        ),
+    ),
     category: requiredText("Category"),
     assetType: requiredText("Asset type"),
-    businessStatus: requiredText("Business status"),
+    businessStatus: z.preprocess(
+      (value) => (typeof value === "string" ? normalizeSelectValue(value) : ""),
+      z
+        .string()
+        .min(1, "Operating status is required")
+        .refine(
+          (value) =>
+            SELLER_OPERATING_STATUSES.includes(
+              value as (typeof SELLER_OPERATING_STATUSES)[number],
+            ),
+          {
+            message: "Operating status must be Active or Inactive.",
+          },
+        ),
+    ),
     askingPrice: positiveMoney("Asking price"),
     currency: z.enum(SELLER_ASSET_CURRENCIES),
     employees: optionalInteger("Employees", 0),
@@ -162,7 +192,7 @@ export function createEmptySellerAssetFormValues(
     country,
     category: "",
     assetType: "",
-    businessStatus: "",
+    businessStatus: "Active",
     askingPrice: "",
     currency: defaultSellerAssetCurrency(country),
     employees: "",
@@ -185,17 +215,21 @@ export function createSellerAssetFormValues({
   licenseType,
 }: SellerAssetFormAsset): SellerAssetFormValues {
   return {
-    title,
-    description,
-    country,
-    category,
-    assetType,
-    businessStatus,
+    title: title.trim(),
+    description: description.trim(),
+    country: normalizeSelectValue(country),
+    category: normalizeSelectValue(category),
+    assetType: normalizeSelectValue(assetType),
+    businessStatus: SELLER_OPERATING_STATUSES.includes(
+      normalizeSelectValue(businessStatus) as (typeof SELLER_OPERATING_STATUSES)[number],
+    )
+      ? normalizeSelectValue(businessStatus)
+      : "Active",
     askingPrice: askingPrice.toString(),
     currency: currency || defaultSellerAssetCurrency(country),
     employees: employees?.toString() ?? "",
     foundedYear: foundedYear?.toString() ?? "",
-    licenseType: licenseType ?? "",
+    licenseType: licenseType ? normalizeSelectValue(licenseType) : "",
   };
 }
 

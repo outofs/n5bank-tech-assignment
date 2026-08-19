@@ -7,10 +7,10 @@ import {
   requireSellerDemoUser,
   type SellerDemoUser,
 } from "@/lib/authz";
+import { db } from "@/lib/db";
 import { createEmptySellerAssetFormValues } from "@/lib/seller-asset-form";
-import {
-  SellerAssetForm,
-} from "@/components/seller/seller-asset-form";
+import { buildSellerAssetSelectOptions } from "@/lib/seller-asset-options";
+import { SellerAssetForm } from "@/components/seller/seller-asset-form";
 
 type SellerAssetNewSearchParams = Promise<{
   created?: string | string[];
@@ -57,6 +57,14 @@ export default async function SellerAssetCreatePage({
         : "";
 
   const initialValues = createEmptySellerAssetFormValues(currentUser.country);
+  const assetRows = await db.asset.findMany({
+    select: {
+      category: true,
+      assetType: true,
+      licenseType: true,
+    },
+  });
+  const assetSelectOptions = buildSellerAssetSelectOptions(assetRows);
 
   return (
     <main className="bg-stone-50/80">
@@ -79,7 +87,12 @@ export default async function SellerAssetCreatePage({
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(320px,0.9fr)]">
           <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
-            <SellerAssetForm initialValues={initialValues} />
+            <SellerAssetForm
+              initialValues={initialValues}
+              categoryOptions={assetSelectOptions.categoryOptions}
+              assetTypeOptions={assetSelectOptions.assetTypeOptions}
+              licenseTypeOptions={assetSelectOptions.licenseTypeOptions}
+            />
           </section>
 
           <aside className="space-y-4">

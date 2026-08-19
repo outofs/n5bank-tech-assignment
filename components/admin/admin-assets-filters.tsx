@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 import { FilterSelect } from "@/components/marketplace";
+import { ADMIN_ASSET_STATUSES } from "@/lib/admin-assets";
+import { SELLER_OPERATING_STATUSES } from "@/lib/seller-asset-form";
 
 const FIELD_LABEL_CLASS =
   "text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500";
@@ -12,6 +14,7 @@ type AdminAssetsFiltersProps = {
   country: string;
   category: string;
   status: string;
+  businessStatus: string;
   countries: string[];
   categories: string[];
   hasActiveFilters: boolean;
@@ -22,6 +25,7 @@ export function AdminAssetsFilters({
   country,
   category,
   status,
+  businessStatus,
   countries,
   categories,
   hasActiveFilters,
@@ -57,15 +61,30 @@ export function AdminAssetsFilters({
         />
 
         <FilterSelect
-          label="Asset status"
+          label="Listing status"
           name="status"
           defaultValue={status}
-          options={[
-            { value: "DRAFT", label: "Draft" },
-            { value: "PUBLISHED", label: "Published" },
-            { value: "SUSPENDED", label: "Suspended" },
-          ]}
-          placeholderLabel="All statuses"
+          options={ADMIN_ASSET_STATUSES.map((value) => ({
+            value,
+            label:
+              value === "DRAFT"
+                ? "Draft"
+                : value === "PUBLISHED"
+                  ? "Published"
+                  : "Suspended",
+          }))}
+          placeholderLabel="All listing statuses"
+        />
+
+        <FilterSelect
+          label="Operating status"
+          name="businessStatus"
+          defaultValue={businessStatus}
+          options={SELLER_OPERATING_STATUSES.map((value) => ({
+            value,
+            label: value,
+          }))}
+          placeholderLabel="All operating statuses"
         />
 
         <div className="flex flex-col gap-2 sm:col-span-2 xl:col-span-2 xl:justify-end">

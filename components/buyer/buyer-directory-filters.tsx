@@ -53,7 +53,7 @@ export function BuyerDirectoryFilters({
         />
 
         <FilterSelect
-          label="Preferred category"
+          label="Target category"
           name="category"
           defaultValue={category}
           options={categories.map((value) => ({ value, label: value }))}

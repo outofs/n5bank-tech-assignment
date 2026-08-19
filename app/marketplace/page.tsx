@@ -6,9 +6,15 @@ import { EmptyState, PageHeader } from "@/components/shared";
 import { AuthorizationError, requireBuyerDemoUser } from "@/lib/authz";
 import { db } from "@/lib/db";
 import {
+  buildCanonicalCountryOptions,
+  buildNormalizedFilterOptions,
+  sanitizeOptionValue,
+} from "@/lib/filter-options";
+import {
   marketplaceFilterOptionSelect,
   marketplaceListAssetSelect,
 } from "@/lib/marketplace/types";
+import { SELLER_OPERATING_STATUSES } from "@/lib/seller-asset-form";
 import {
   calculateSmartMatchScore,
   hasSmartMatchPreferences,
@@ -43,12 +49,6 @@ function firstParam(value: string | string[] | undefined) {
 
 function trimParam(value: string | string[] | undefined) {
   return firstParam(value)?.trim() || "";
-}
-
-function uniqueSorted(values: Array<string | null | undefined>) {
-  return Array.from(new Set(values.filter(Boolean) as string[])).sort((a, b) =>
-    a.localeCompare(b),
-  );
 }
 
 function parsePositiveMoney(value: string | undefined) {
@@ -113,13 +113,16 @@ export default async function MarketplacePage({
     select: marketplaceFilterOptionSelect,
   });
 
-  const countries = uniqueSorted(baseMarketplaceAssets.map((asset) => asset.country));
-  const categories = uniqueSorted(
+  const countryOptions = buildCanonicalCountryOptions(
+    baseMarketplaceAssets.map((asset) => asset.country),
+  );
+  const categoryOptionGroup = buildNormalizedFilterOptions(
     baseMarketplaceAssets.map((asset) => asset.category),
   );
-  const businessStatuses = uniqueSorted(
-    baseMarketplaceAssets.map((asset) => asset.businessStatus),
-  );
+  const operatingStatusOptions = SELLER_OPERATING_STATUSES.map((value) => ({
+    value,
+    label: value,
+  }));
 
   const query = trimParam(rawQuery);
   const countryParam = trimParam(rawCountry);
@@ -129,11 +132,12 @@ export default async function MarketplacePage({
   const maxPriceParam = parsePositiveMoney(trimParam(rawMaxPrice));
   const sortParam = trimParam(rawSort);
 
-  const country = countries.includes(countryParam) ? countryParam : "";
-  const category = categories.includes(categoryParam) ? categoryParam : "";
-  const businessStatus = businessStatuses.includes(businessStatusParam)
-    ? businessStatusParam
-    : "";
+  const country = sanitizeOptionValue(countryParam, countryOptions);
+  const category = sanitizeOptionValue(categoryParam, categoryOptionGroup.options);
+  const businessStatus = sanitizeOptionValue(
+    businessStatusParam,
+    operatingStatusOptions,
+  );
   const sort =
     SORT_OPTIONS.find((option) => option.value === sortParam)?.value ??
     DEFAULT_SORT;
@@ -160,7 +164,9 @@ export default async function MarketplacePage({
   }
 
   if (category) {
-    where.category = category;
+    where.category = {
+      in: categoryOptionGroup.valuesByOption.get(category) ?? [category],
+    };
   }
 
   if (businessStatus) {
@@ -263,7 +269,7 @@ export default async function MarketplacePage({
               label="Country"
               name="country"
               defaultValue={country}
-              options={countries.map((value) => ({ value, label: value }))}
+              options={countryOptions}
               placeholderLabel="All countries"
             />
 
@@ -271,16 +277,16 @@ export default async function MarketplacePage({
               label="Category"
               name="category"
               defaultValue={category}
-              options={categories.map((value) => ({ value, label: value }))}
+              options={categoryOptionGroup.options}
               placeholderLabel="All categories"
             />
 
             <FilterSelect
-              label="Business status"
+              label="Operating status"
               name="businessStatus"
               defaultValue={businessStatus}
-              options={businessStatuses.map((value) => ({ value, label: value }))}
-              placeholderLabel="All statuses"
+              options={operatingStatusOptions}
+              placeholderLabel="All operating statuses"
             />
 
             <TextField label="Min price">

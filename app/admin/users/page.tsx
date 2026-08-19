@@ -10,7 +10,11 @@ import {
 import { PageHeader } from "@/components/shared";
 import { AuthorizationError, requireManagerDemoUser } from "@/lib/authz";
 import { db } from "@/lib/db";
-import { adminModerationUserSelect, uniqueSorted } from "@/lib/admin-users";
+import { adminModerationUserSelect } from "@/lib/admin-users";
+import {
+  buildCanonicalCountryOptions,
+  sanitizeOptionValue,
+} from "@/lib/filter-options";
 
 import {
   reactivateAdminUserAction,
@@ -112,9 +116,11 @@ export default async function AdminUsersPage({
     },
   });
 
-  const countries = uniqueSorted(baseUsers.map((user) => user.country));
+  const countryOptions = buildCanonicalCountryOptions(
+    baseUsers.map((user) => user.country),
+  );
   const countryParam = trimParam(rawCountry);
-  const country = countries.includes(countryParam) ? countryParam : "";
+  const country = sanitizeOptionValue(countryParam, countryOptions);
 
   const where: Prisma.UserWhereInput = {
     role: {
@@ -213,7 +219,7 @@ export default async function AdminUsersPage({
           role={role}
           country={country}
           status={status}
-          countries={countries}
+          countries={countryOptions.map((option) => option.value)}
           hasActiveFilters={hasActiveFilters}
         />
 

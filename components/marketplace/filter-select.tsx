@@ -1,12 +1,16 @@
+"use client";
+
+import { useId, useState } from "react";
+import Select from "react-select";
+import type { SingleValue } from "react-select";
+
+import { createSharedSelectStyles } from "@/lib/select-styles";
+import { toSelectOption, type SelectOption } from "@/lib/select-options";
+
 const FIELD_LABEL_CLASS =
   "text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500";
-const CONTROL_CLASS =
-  "h-11 w-full rounded-xl border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition placeholder:text-stone-400 focus:border-stone-500";
 
-export type FilterSelectOption = {
-  value: string;
-  label: string;
-};
+export type FilterSelectOption = SelectOption;
 
 export type FilterSelectProps = {
   label: string;
@@ -23,17 +27,30 @@ export function FilterSelect({
   options,
   placeholderLabel,
 }: FilterSelectProps) {
+  const inputId = useId();
+  const [value, setValue] = useState(defaultValue);
+  const selectedOption = toSelectOption(value, options);
+
   return (
-    <label className="flex min-w-0 flex-col gap-1.5">
-      <span className={FIELD_LABEL_CLASS}>{label}</span>
-      <select name={name} defaultValue={defaultValue} className={CONTROL_CLASS}>
-        {placeholderLabel ? <option value="">{placeholderLabel}</option> : null}
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </label>
+    <div className="flex min-w-0 flex-col gap-1.5">
+      <label className={FIELD_LABEL_CLASS} htmlFor={inputId}>
+        {label}
+      </label>
+      <input type="hidden" name={name} value={value} />
+      <Select<FilterSelectOption, false>
+        inputId={inputId}
+        instanceId={inputId}
+        isClearable={Boolean(placeholderLabel)}
+        isSearchable
+        options={options}
+        value={selectedOption}
+        onChange={(option: SingleValue<FilterSelectOption>) =>
+          setValue(option?.value ?? "")
+        }
+        placeholder={placeholderLabel ?? "Select"}
+        className="w-full"
+        styles={createSharedSelectStyles(false)}
+      />
+    </div>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { db } from "@/lib/db";
 import { EmptyState, PageHeader } from "@/components/shared";
 import { ProfileEditForm } from "@/components/profile/profile-edit-form";
 import {
@@ -68,6 +69,35 @@ export default async function ProfileEditPage() {
     );
   }
 
+  const [assetCategories, buyerCategories] = await Promise.all([
+    db.asset.findMany({
+      select: {
+        category: true,
+      },
+      distinct: ["category"],
+      orderBy: {
+        category: "asc",
+      },
+    }),
+    db.buyerProfile.findMany({
+      select: {
+        preferredCategories: true,
+      },
+    }),
+  ]);
+
+  const categoryOptions = Array.from(
+    new Map(
+      [
+        ...assetCategories.map((asset) => asset.category),
+        ...buyerCategories.flatMap((buyer) => buyer.preferredCategories),
+      ]
+        .map((category) => category.trim().replace(/\s+/g, " "))
+        .filter(Boolean)
+        .map((category) => [category.toLocaleLowerCase(), category] as const),
+    ).values(),
+  ).sort((left, right) => left.localeCompare(right));
+
   return (
     <main className="bg-stone-50/80">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
@@ -88,6 +118,7 @@ export default async function ProfileEditPage() {
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(320px,0.9fr)]">
           <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
             <ProfileEditForm
+              categoryOptions={categoryOptions}
               initialValues={createProfileEditValues({
                 name: currentUser.name,
                 company: currentUser.company,
@@ -109,8 +140,8 @@ export default async function ProfileEditPage() {
               </p>
               <p className="mt-2 text-sm leading-6 text-stone-600">
                 Changes are saved directly to the active Buyer&apos;s seeded
-                profile. Text fields are trimmed and the investment range is
-                validated server-side.
+                profile. Structured selectors preserve canonical countries and
+                categories, and the investment range is validated server-side.
               </p>
             </section>
           </aside>

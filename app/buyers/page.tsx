@@ -12,9 +12,6 @@ import {
   buildBuyerCompatibilityFilter,
   hasBuyerDirectoryFilters,
   normalizeBuyerDirectoryFilters,
-  sanitizeBuyerDirectorySelection,
-  uniqueBuyerCategories,
-  uniqueBuyerCountries,
 } from "@/lib/buyer-directory";
 import {
   buyerDirectoryCardSelect,
@@ -22,6 +19,11 @@ import {
   hasBuyerProfile,
 } from "@/lib/buyers/types";
 import { db } from "@/lib/db";
+import {
+  buildCanonicalCountryOptions,
+  buildNormalizedFilterOptions,
+  sanitizeOptionValue,
+} from "@/lib/filter-options";
 
 type BuyerDirectorySearchParams = Promise<{
   q?: string | string[];
@@ -69,31 +71,43 @@ export default async function BuyersPage({
     maxInvestment: rawMaxInvestment,
   });
 
-  const baseBuyers = await db.user.findMany({
-    where: {
-      role: "BUYER",
-      status: "ACTIVE",
-      buyerProfile: {
-        isNot: null,
+  const [baseBuyers, assetCategoryRows] = await Promise.all([
+    db.user.findMany({
+      where: {
+        role: "BUYER",
+        status: "ACTIVE",
+        buyerProfile: {
+          isNot: null,
+        },
       },
-    },
-    select: buyerDirectoryFilterOptionSelect,
-  });
+      select: buyerDirectoryFilterOptionSelect,
+    }),
+    db.asset.findMany({
+      select: {
+        category: true,
+      },
+    }),
+  ]);
 
-  const countries = uniqueBuyerCountries(
+  const countryOptions = buildCanonicalCountryOptions(
     baseBuyers.map((buyer) => buyer.country),
   );
-  const categories = uniqueBuyerCategories(
-    baseBuyers.map((buyer) => buyer.buyerProfile?.preferredCategories),
+  const categoryOptionGroup = buildNormalizedFilterOptions(
+    [
+      ...baseBuyers.flatMap(
+        (buyer) => buyer.buyerProfile?.preferredCategories ?? [],
+      ),
+      ...assetCategoryRows.map((asset) => asset.category),
+    ],
   );
 
-  const country = sanitizeBuyerDirectorySelection(
+  const country = sanitizeOptionValue(
     normalizedFilters.country,
-    countries,
+    countryOptions,
   );
-  const category = sanitizeBuyerDirectorySelection(
+  const category = sanitizeOptionValue(
     normalizedFilters.category,
-    categories,
+    categoryOptionGroup.options,
   );
   const query = normalizedFilters.query;
 
@@ -152,7 +166,7 @@ export default async function BuyersPage({
 
   if (category) {
     buyerProfileFilters.preferredCategories = {
-      has: category,
+      hasSome: categoryOptionGroup.valuesByOption.get(category) ?? [category],
     };
   }
 
@@ -192,7 +206,11 @@ export default async function BuyersPage({
   const visibleBuyers = buyers.filter(hasBuyerProfile);
 
   const visibleCount = visibleBuyers.length;
-  const hasActiveFilters = hasBuyerDirectoryFilters(normalizedFilters);
+  const hasActiveFilters = hasBuyerDirectoryFilters({
+    ...normalizedFilters,
+    country,
+    category,
+  });
 
   return (
     <main className="bg-stone-50/80">
@@ -224,8 +242,8 @@ export default async function BuyersPage({
           category={category}
           minInvestment={normalizedFilters.minInvestment}
           maxInvestment={normalizedFilters.maxInvestment}
-          countries={countries}
-          categories={categories}
+          countries={countryOptions.map((option) => option.value)}
+          categories={categoryOptionGroup.options.map((option) => option.value)}
         />
 
         {visibleCount === 0 ? (

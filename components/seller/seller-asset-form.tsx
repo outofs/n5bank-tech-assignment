@@ -12,6 +12,7 @@ import type {
   SellerAssetFormValues,
   SellerAssetStatus,
 } from "@/lib/seller-asset-form";
+import { SellerAssetSelectFields } from "./seller-asset-select-fields";
 
 const INPUT_CLASS =
   "h-11 w-full rounded-xl border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition placeholder:text-stone-400 focus:border-stone-500";
@@ -74,14 +75,6 @@ function FormField({
   );
 }
 
-const CURRENCY_OPTIONS = [
-  { value: "EUR", label: "EUR - Euro" },
-  { value: "GBP", label: "GBP - British pound" },
-  { value: "USD", label: "USD - US dollar" },
-  { value: "SGD", label: "SGD - Singapore dollar" },
-  { value: "AED", label: "AED - UAE dirham" },
-] as const;
-
 type SellerAssetFormMode = "create" | "edit";
 
 type SellerAssetFormAction = {
@@ -98,6 +91,9 @@ export function SellerAssetForm({
   currentStatus,
   actions,
   cancelHref = "/seller/assets",
+  categoryOptions,
+  assetTypeOptions,
+  licenseTypeOptions,
 }: {
   initialValues: SellerAssetFormValues;
   state?: SellerAssetCreateState;
@@ -106,6 +102,9 @@ export function SellerAssetForm({
   currentStatus?: SellerAssetStatus;
   actions?: SellerAssetFormAction[];
   cancelHref?: string;
+  categoryOptions: string[];
+  assetTypeOptions: string[];
+  licenseTypeOptions: string[];
 }) {
   const [values, setValues] = useState(initialValues);
   const [actionState, formAction] = useActionState(
@@ -172,95 +171,61 @@ export function SellerAssetForm({
       ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <FormField label="Title" error={currentState.errors.title}>
-          <input
-            name="title"
-            value={values.title}
-            onChange={(event) =>
-              setValues((current) => ({ ...current, title: event.target.value }))
-            }
-            className={INPUT_CLASS}
-          />
-        </FormField>
+        <div className="sm:col-span-2">
+          <FormField label="Title" error={currentState.errors.title}>
+            <input
+              name="title"
+              value={values.title}
+              onChange={(event) =>
+                setValues((current) => ({
+                  ...current,
+                  title: event.target.value,
+                }))
+              }
+              className={INPUT_CLASS}
+            />
+          </FormField>
+        </div>
 
-        <FormField label="Country" error={currentState.errors.country}>
-          <input
-            name="country"
-            value={values.country}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                country: event.target.value,
-              }))
+        <div className="sm:col-span-2">
+        <div className="sm:col-span-2">
+          <SellerAssetSelectFields
+            country={values.country}
+            category={values.category}
+            assetType={values.assetType}
+            businessStatus={values.businessStatus}
+            currency={values.currency}
+            licenseType={values.licenseType}
+            countryError={currentState.errors.country}
+            categoryError={currentState.errors.category}
+            assetTypeError={currentState.errors.assetType}
+            businessStatusError={currentState.errors.businessStatus}
+            currencyError={currentState.errors.currency}
+            licenseTypeError={currentState.errors.licenseType}
+            categoryOptions={categoryOptions}
+            assetTypeOptions={assetTypeOptions}
+            licenseTypeOptions={licenseTypeOptions}
+            onCountryChange={(country) =>
+              setValues((current) => ({ ...current, country }))
             }
-            className={INPUT_CLASS}
+            onCategoryChange={(category) =>
+              setValues((current) => ({ ...current, category }))
+            }
+            onAssetTypeChange={(assetType) =>
+              setValues((current) => ({ ...current, assetType }))
+            }
+            onBusinessStatusChange={(businessStatus) =>
+              setValues((current) => ({ ...current, businessStatus }))
+            }
+            onCurrencyChange={(currency) =>
+              setValues((current) => ({ ...current, currency }))
+            }
+            onLicenseTypeChange={(licenseType) =>
+              setValues((current) => ({ ...current, licenseType }))
+            }
           />
-        </FormField>
-
-        <FormField label="Category" error={currentState.errors.category}>
-          <input
-            name="category"
-            value={values.category}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                category: event.target.value,
-              }))
-            }
-            className={INPUT_CLASS}
-          />
-        </FormField>
-
-        <FormField label="Asset type" error={currentState.errors.assetType}>
-          <input
-            name="assetType"
-            value={values.assetType}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                assetType: event.target.value,
-              }))
-            }
-            className={INPUT_CLASS}
-          />
-        </FormField>
-
-        <FormField
-          label="Business status"
-          error={currentState.errors.businessStatus}
-        >
-          <input
-            name="businessStatus"
-            value={values.businessStatus}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                businessStatus: event.target.value,
-              }))
-            }
-            className={INPUT_CLASS}
-          />
-        </FormField>
-
-        <FormField label="Currency" error={currentState.errors.currency}>
-          <select
-            name="currency"
-            value={values.currency}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                currency: event.target.value,
-              }))
-            }
-            className={INPUT_CLASS}
-          >
-            {CURRENCY_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </FormField>
+        </div>
+        </div>
 
         <FormField label="Asking price" error={currentState.errors.askingPrice}>
           <input
@@ -295,27 +260,6 @@ export function SellerAssetForm({
             className={INPUT_CLASS}
           />
         </FormField>
-
-        <FormField
-          label="Founded year"
-          error={currentState.errors.foundedYear}
-        >
-          <input
-            type="number"
-            name="foundedYear"
-            min="1900"
-            max="2100"
-            step="1"
-            value={values.foundedYear}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                foundedYear: event.target.value,
-              }))
-            }
-            className={INPUT_CLASS}
-          />
-        </FormField>
       </div>
 
       <FormField label="Description" error={currentState.errors.description}>
@@ -333,17 +277,23 @@ export function SellerAssetForm({
         />
       </FormField>
 
-      <FormField label="License type" error={currentState.errors.licenseType}>
+      <FormField
+        label="Founded year"
+        error={currentState.errors.foundedYear}
+      >
         <input
-          name="licenseType"
-          value={values.licenseType}
+          type="number"
+          name="foundedYear"
+          min="1900"
+          max="2100"
+          step="1"
+          value={values.foundedYear}
           onChange={(event) =>
             setValues((current) => ({
               ...current,
-              licenseType: event.target.value,
+              foundedYear: event.target.value,
             }))
           }
-          placeholder="Optional"
           className={INPUT_CLASS}
         />
       </FormField>
