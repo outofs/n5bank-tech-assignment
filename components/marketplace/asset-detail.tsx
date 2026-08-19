@@ -6,6 +6,7 @@ import type { MarketplaceDetailAsset } from "@/lib/marketplace/types";
 
 export type AssetDetailProps = {
   asset: MarketplaceDetailAsset;
+  smartMatchPanel?: ReactNode;
   contactPanel: ReactNode;
 };
 
@@ -26,7 +27,11 @@ function DetailRow({
   );
 }
 
-export function AssetDetail({ asset, contactPanel }: AssetDetailProps) {
+export function AssetDetail({
+  asset,
+  smartMatchPanel,
+  contactPanel,
+}: AssetDetailProps) {
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(320px,0.9fr)]">
       <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
@@ -89,6 +94,8 @@ export function AssetDetail({ asset, contactPanel }: AssetDetailProps) {
       </section>
 
       <aside className="space-y-4">
+        {smartMatchPanel}
+
         <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
             Seller summary

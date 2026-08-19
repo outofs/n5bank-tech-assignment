@@ -1,7 +1,7 @@
 import Link from "next/link";
-
-import { StatusBadge } from "@/components/shared";
+import { SmartMatchBadge } from "@/components/marketplace/smart-match";
 import { formatCurrency, formatDate } from "@/lib/formatters";
+import type { SmartMatchResult } from "@/lib/smart-match";
 import type { MarketplaceListAsset } from "@/lib/marketplace/types";
 
 function truncateDescription(description: string) {
@@ -13,9 +13,10 @@ function truncateDescription(description: string) {
 export type AssetCardProps = {
   href: string;
   asset: MarketplaceListAsset;
+  smartMatch?: SmartMatchResult | null;
 };
 
-export function AssetCard({ href, asset }: AssetCardProps) {
+export function AssetCard({ href, asset, smartMatch }: AssetCardProps) {
   return (
     <Link
       href={href}
@@ -24,10 +25,10 @@ export function AssetCard({ href, asset }: AssetCardProps) {
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-2">
           <div className="flex flex-wrap gap-2">
-            <StatusBadge status="PUBLISHED" />
             <span className="rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-stone-600">
               {asset.country}
             </span>
+            {smartMatch ? <SmartMatchBadge score={smartMatch.score} /> : null}
           </div>
           <h2 className="text-lg font-semibold tracking-tight text-stone-950">
             {asset.title}

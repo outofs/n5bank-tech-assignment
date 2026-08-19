@@ -1,14 +1,19 @@
 import { Prisma } from "@prisma/client";
 import Link from "next/link";
 
+import { SmartMatchPanel, AssetCard, FilterSelect, TextField } from "@/components/marketplace";
 import { EmptyState, PageHeader } from "@/components/shared";
-import { AssetCard, FilterSelect, TextField } from "@/components/marketplace";
 import { AuthorizationError, requireBuyerDemoUser } from "@/lib/authz";
 import { db } from "@/lib/db";
 import {
   marketplaceFilterOptionSelect,
   marketplaceListAssetSelect,
 } from "@/lib/marketplace/types";
+import {
+  calculateSmartMatchScore,
+  hasSmartMatchPreferences,
+  sortAssetsBySmartMatch,
+} from "@/lib/smart-match";
 
 type MarketplaceSearchParams = Promise<{
   q?: string | string[];
@@ -22,6 +27,7 @@ type MarketplaceSearchParams = Promise<{
 
 const DEFAULT_SORT = "newest";
 const SORT_OPTIONS = [
+  { value: "best-match", label: "Best match" },
   { value: "newest", label: "Newest" },
   { value: "price-asc", label: "Price low to high" },
   { value: "price-desc", label: "Price high to low" },
@@ -63,21 +69,27 @@ export default async function MarketplacePage({
 }: {
   searchParams: MarketplaceSearchParams;
 }) {
-  try {
-    await requireBuyerDemoUser();
-  } catch (error) {
-    if (error instanceof AuthorizationError) {
-      return (
-        <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <EmptyState
-            title="Buyer access required"
-            description="Select an active Buyer demo identity from the header to view the marketplace."
-          />
-        </main>
-      );
-    }
+  const currentUser = await (async () => {
+    try {
+      return await requireBuyerDemoUser();
+    } catch (error) {
+      if (error instanceof AuthorizationError) {
+        return null;
+      }
 
-    throw error;
+      throw error;
+    }
+  })();
+
+  if (!currentUser) {
+    return (
+      <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <EmptyState
+          title="Buyer access required"
+          description="Select an active Buyer demo identity from the header to view the marketplace."
+        />
+      </main>
+    );
   }
 
   const {
@@ -89,6 +101,9 @@ export default async function MarketplacePage({
     maxPrice: rawMaxPrice,
     sort: rawSort,
   } = await searchParams;
+
+  const smartMatchProfile = currentUser.buyerProfile;
+  const canShowSmartMatch = hasSmartMatchPreferences(smartMatchProfile);
 
   const baseMarketplaceAssets = await db.asset.findMany({
     where: {
@@ -166,10 +181,12 @@ export default async function MarketplacePage({
 
   const orderBy: Prisma.AssetOrderByWithRelationInput[] =
     sort === "price-asc"
-      ? [{ askingPrice: "asc" }, { createdAt: "desc" }]
+      ? [{ askingPrice: "asc" }, { createdAt: "desc" }, { id: "asc" }]
       : sort === "price-desc"
-        ? [{ askingPrice: "desc" }, { createdAt: "desc" }]
-        : [{ createdAt: "desc" }];
+        ? [{ askingPrice: "desc" }, { createdAt: "desc" }, { id: "asc" }]
+        : sort === "best-match"
+          ? [{ createdAt: "desc" }, { id: "asc" }]
+          : [{ createdAt: "desc" }, { id: "asc" }];
 
   const assets = await db.asset.findMany({
     where,
@@ -177,7 +194,16 @@ export default async function MarketplacePage({
     orderBy,
   });
 
-  const visibleCount = assets.length;
+  const scoredAssets = assets.map((asset) => ({
+    ...asset,
+    smartMatch: calculateSmartMatchScore(smartMatchProfile, asset),
+  }));
+  const visibleAssets =
+    sort === "best-match"
+      ? sortAssetsBySmartMatch(scoredAssets)
+      : scoredAssets;
+
+  const visibleCount = visibleAssets.length;
   const hasActiveFilters = Boolean(
     query ||
       country ||
@@ -211,6 +237,10 @@ export default async function MarketplacePage({
             </div>
           }
         />
+
+        {!canShowSmartMatch ? (
+          <SmartMatchPanel match={null} ctaHref="/profile/edit" />
+        ) : null}
 
         <section className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
           <form
@@ -332,11 +362,12 @@ export default async function MarketplacePage({
           />
         ) : (
           <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-            {assets.map((asset) => (
+            {visibleAssets.map((asset) => (
               <AssetCard
                 key={asset.id}
                 href={`/marketplace/${asset.id}`}
                 asset={asset}
+                smartMatch={canShowSmartMatch ? asset.smartMatch : null}
               />
             ))}
           </section>
