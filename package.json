@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "tsc -p tsconfig.test.json && node .test-dist/tests/smart-match.test.js",
+    "test": "vitest run --pool=threads",
+    "test:watch": "vitest --pool=threads",
     "lint": "eslint",
     "typecheck": "tsc --noEmit"
   },
@@ -28,6 +29,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.11"
   }
 }
