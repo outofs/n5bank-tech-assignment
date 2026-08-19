@@ -16,6 +16,15 @@ type NavItem = {
 };
 
 function getNavItem(role: RoleNavigationProps["role"], label: string): NavItem | null {
+  if (role === "MANAGER" && label === "Admin") {
+    return {
+      label,
+      href: "/admin",
+      activePrefixes: ["/admin"],
+      activeExact: ["/admin"],
+    };
+  }
+
   if (role === "BUYER" && label === "Marketplace") {
     return {
       label,
@@ -71,6 +80,10 @@ function isActivePath(
 ) {
   if (!pathname) {
     return false;
+  }
+
+  if (role === "MANAGER" && item.href === "/admin") {
+    return pathname.startsWith("/admin");
   }
 
   if (item.activeExact?.includes(pathname)) {
