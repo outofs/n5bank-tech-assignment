@@ -7,13 +7,13 @@ import { getSeededDemoUsers } from "@/lib/demo-users";
 function roleBadgeTone(role?: string) {
   switch (role) {
     case "BUYER":
-      return "border-emerald-200 bg-emerald-50 text-emerald-800";
+      return "border-emerald-200 bg-emerald-50 text-emerald-700";
     case "SELLER":
-      return "border-teal-200 bg-teal-50 text-teal-800";
+      return "border-sky-200 bg-sky-50 text-sky-700";
     case "MANAGER":
-      return "border-stone-300 bg-stone-100 text-stone-800";
+      return "border-slate-300 bg-slate-100 text-slate-700";
     default:
-      return "border-stone-200 bg-stone-100 text-stone-700";
+      return "border-slate-200 bg-slate-100 text-slate-600";
   }
 }
 
@@ -27,135 +27,136 @@ export default async function SiteHeader() {
   const activeNavigation = seededUsers.find(({ role }) => role === currentRole);
 
   return (
-    <header className="border-b border-stone-200 bg-white">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-stone-200 bg-stone-950 text-[11px] font-semibold tracking-[0.18em] text-white">
+    <header className="sticky top-0 z-30 border-b border-[var(--border)] bg-white/88 backdrop-blur-xl">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-indigo-200 bg-[linear-gradient(135deg,#1f4ae0,#5b7cff)] text-[11px] font-semibold tracking-[0.18em] text-white shadow-[0_16px_30px_-20px_rgba(31,74,224,0.9)]">
               N5
             </div>
-            <div className="min-w-0">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-stone-500">
-                N5Deal Marketplace Prototype
+            <div className="min-w-0 space-y-0.5">
+              <p className="text-[0.72rem] font-semibold text-indigo-600">
+                N5Deal Marketplace
               </p>
-              <h1 className="mt-0.5 text-base font-semibold tracking-tight text-stone-950 sm:text-lg">
-                Demo shell for an M&A marketplace
+              <h1 className="text-base font-semibold tracking-tight text-slate-950 sm:text-lg">
+                Fintech and M&A marketplace prototype
               </h1>
-              <p className="mt-0.5 hidden max-w-2xl text-sm leading-6 text-stone-600 sm:block">
-                A neutral, server-rendered shell for browsing seeded demo
-                identities and moving between buyer, seller, and manager views.
+              <p className="hidden text-sm text-slate-500 lg:block">
+                Browse buyer, seller, and manager flows with seeded identities.
               </p>
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 rounded-xl border border-stone-200 bg-stone-50/80 px-3 py-2.5 sm:min-w-[280px]">
-            {currentUser ? (
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-stone-500">
-                  Selected user
-                </span>
-                <span className="text-sm font-semibold text-stone-950">
-                  {currentUser.name}
-                </span>
-                <span className="text-sm text-stone-500">•</span>
-                <span className="text-sm text-stone-600">
-                  {currentUser.company}
-                </span>
+          <div className="flex flex-wrap items-center gap-3 xl:justify-end">
+            <div className="flex min-w-0 items-center gap-3 rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 shadow-[0_10px_25px_-20px_rgba(15,23,42,0.45)]">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-slate-950">
+                  {currentUser ? currentUser.name : "No demo identity"}
+                </p>
+                <p className="truncate text-xs text-slate-500">
+                  {currentUser ? currentUser.company : "Select a seeded user"}
+                </p>
+              </div>
+              {currentUser ? (
                 <span
-                  className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${roleBadgeTone(
+                  className={`inline-flex shrink-0 rounded-full border px-2.5 py-1 text-[0.72rem] font-semibold ${roleBadgeTone(
                     currentUser.role,
                   )}`}
                 >
                   {currentUser.role}
                 </span>
-              </div>
-            ) : (
-              <div className="flex flex-wrap items-center gap-2">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-stone-500">
-                  Demo mode
-                </p>
-                <p className="text-sm font-semibold text-stone-950">
-                  No identity selected
-                </p>
-                <p className="w-full text-sm text-stone-600">
-                  Pick a seeded demo user to enter the prototype.
-                </p>
-              </div>
-            )}
-
-            <div className="flex flex-wrap items-center gap-2 border-t border-stone-200 pt-2">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-stone-500">
-                Switch demo identity
-              </span>
-              {seededUsers.map(({ label, user }) => {
-                if (!user) {
-                  return null;
-                }
-
-                const isSelected = user.id === currentUser?.id;
-
-                return (
-                  <form
-                    key={user.id}
-                    action={async () => {
-                      "use server";
-                      await setDemoUser(user.id);
-                      revalidatePath("/");
-                    }}
-                  >
-                    <button
-                      type="submit"
-                      className={`rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] transition ${
-                        isSelected
-                          ? "border-stone-950 bg-stone-950 text-white"
-                          : "border-stone-300 bg-white text-stone-700 hover:border-stone-400 hover:bg-stone-100"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  </form>
-                );
-              })}
-
-              {currentUser ? (
-                <form
-                  action={async () => {
-                    "use server";
-                    await clearDemoUser();
-                    revalidatePath("/");
-                  }}
-                >
-                  <button
-                    type="submit"
-                    className="rounded-full border border-stone-300 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-700 transition hover:bg-stone-100"
-                  >
-                    Clear
-                  </button>
-                </form>
               ) : null}
             </div>
+
+            <details className="group relative">
+              <summary className="flex cursor-pointer list-none items-center gap-2 rounded-full border border-[var(--border)] bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-[0_10px_25px_-20px_rgba(15,23,42,0.45)] hover:border-[var(--border-strong)] hover:text-slate-900">
+                Demo switch
+              </summary>
+              <div className="absolute right-0 top-[calc(100%+0.75rem)] w-72 rounded-[1.25rem] border border-[var(--border)] bg-white p-3 shadow-[0_30px_60px_-34px_rgba(15,23,42,0.4)]">
+                <div className="mb-2 px-1">
+                  <p className="text-sm font-semibold text-slate-950">
+                    Switch demo identity
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Secondary control for testing role-specific flows.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  {seededUsers.map(({ label, user }) => {
+                    if (!user) {
+                      return null;
+                    }
+
+                    const isSelected = user.id === currentUser?.id;
+
+                    return (
+                      <form
+                        key={user.id}
+                        action={async () => {
+                          "use server";
+                          await setDemoUser(user.id);
+                          revalidatePath("/");
+                        }}
+                      >
+                        <button
+                          type="submit"
+                          className={`flex w-full items-center justify-between rounded-2xl border px-3 py-3 text-left ${
+                            isSelected
+                              ? "border-indigo-200 bg-indigo-50 text-indigo-700"
+                              : "border-[var(--border)] bg-white text-slate-700 hover:border-[var(--border-strong)] hover:bg-slate-50"
+                          }`}
+                        >
+                          <span className="text-sm font-medium">{label}</span>
+                          <span className="text-xs text-slate-500">{user.company}</span>
+                        </button>
+                      </form>
+                    );
+                  })}
+
+                  {currentUser ? (
+                    <form
+                      action={async () => {
+                        "use server";
+                        await clearDemoUser();
+                        revalidatePath("/");
+                      }}
+                    >
+                      <button
+                        type="submit"
+                        className="flex w-full items-center justify-center rounded-2xl border border-[var(--border)] bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-600 hover:border-[var(--border-strong)] hover:bg-slate-100"
+                      >
+                        Clear identity
+                      </button>
+                    </form>
+                  ) : null}
+                </div>
+              </div>
+            </details>
           </div>
         </div>
 
         <nav
           aria-label="Role navigation"
-          className="flex flex-col gap-2 border-t border-stone-200 pt-3"
+          className="flex flex-col gap-3 rounded-[1.5rem] border border-[var(--border)] bg-white px-4 py-3 shadow-[0_20px_40px_-34px_rgba(15,23,42,0.45)]"
         >
           <div className="flex items-center justify-between gap-3">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-stone-500">
+            <p className="text-[0.72rem] font-semibold text-slate-500">
               Navigation
             </p>
             {currentRole ? (
-              <span className="text-[11px] uppercase tracking-[0.2em] text-stone-500">
+              <span className="text-[0.72rem] text-slate-500">
                 {currentRole}
               </span>
             ) : null}
           </div>
 
           {activeNavigation ? (
-            <RoleNavigation role={activeNavigation.role} items={activeNavigation.navigation} />
+            <RoleNavigation
+              role={activeNavigation.role}
+              items={activeNavigation.navigation}
+            />
           ) : (
-            <p className="text-sm text-stone-600">
+            <p className="text-sm text-slate-600">
               Select a demo identity to view role-specific navigation.
             </p>
           )}

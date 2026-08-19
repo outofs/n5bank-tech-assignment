@@ -9,18 +9,18 @@ export function createSharedSelectStyles<IsMulti extends boolean>(
     control: (base, state) => ({
       ...base,
       minHeight: 44,
-      borderRadius: 12,
+      borderRadius: 9999,
       backgroundColor: "#ffffff",
       borderColor: hasError
         ? "#fda4af"
         : state.isFocused
-          ? "#57534e"
-          : "#d6d3d1",
+          ? "#335cff"
+          : "#d7dfeb",
       boxShadow: state.isFocused
-        ? "0 0 0 2px rgba(120, 113, 108, 0.12)"
+        ? "0 0 0 4px rgba(51, 92, 255, 0.12)"
         : "none",
       "&:hover": {
-        borderColor: hasError ? "#fb7185" : "#a8a29e",
+        borderColor: hasError ? "#fb7185" : "#9db0cc",
       },
     }),
     valueContainer: (base) => ({
@@ -36,7 +36,7 @@ export function createSharedSelectStyles<IsMulti extends boolean>(
     }),
     placeholder: (base) => ({
       ...base,
-      color: "#a8a29e",
+      color: "#94a3b8",
     }),
     singleValue: (base) => ({
       ...base,
@@ -70,11 +70,11 @@ export function createSharedSelectStyles<IsMulti extends boolean>(
     menu: (base) => ({
       ...base,
       marginTop: 8,
-      borderRadius: 12,
-      border: "1px solid #e7e5e4",
+      borderRadius: 18,
+      border: "1px solid #dbe3f0",
       overflow: "hidden",
       boxShadow:
-        "0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.08)",
+        "0 18px 36px -24px rgba(15, 23, 42, 0.28), 0 10px 18px -16px rgba(15, 23, 42, 0.16)",
       zIndex: 20,
     }),
     menuList: (base) => ({
@@ -87,36 +87,36 @@ export function createSharedSelectStyles<IsMulti extends boolean>(
       ...base,
       cursor: "pointer",
       backgroundColor: state.isSelected
-        ? "#0c0a09"
+        ? "#1f4ae0"
         : state.isFocused
-          ? "#f5f5f4"
+          ? "#eff4ff"
           : "#ffffff",
-      color: state.isSelected ? "#ffffff" : "#44403c",
+      color: state.isSelected ? "#ffffff" : "#334155",
       fontSize: "0.875rem",
       paddingTop: 10,
       paddingBottom: 10,
       paddingLeft: 12,
       paddingRight: 12,
       "&:active": {
-        backgroundColor: state.isSelected ? "#0c0a09" : "#e7e5e4",
+        backgroundColor: state.isSelected ? "#1f4ae0" : "#dbeafe",
       },
     }),
     indicatorsContainer: (base) => ({
       ...base,
-      color: "#a8a29e",
+      color: "#94a3b8",
     }),
     dropdownIndicator: (base) => ({
       ...base,
-      color: "#a8a29e",
+      color: "#94a3b8",
       "&:hover": {
-        color: "#57534e",
+        color: "#335cff",
       },
     }),
     clearIndicator: (base) => ({
       ...base,
-      color: "#a8a29e",
+      color: "#94a3b8",
       "&:hover": {
-        color: "#57534e",
+        color: "#335cff",
       },
     }),
     indicatorSeparator: (base) => ({

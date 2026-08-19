@@ -18,17 +18,17 @@ export function AdminAssetCard({
   const isSuspended = asset.status === "SUSPENDED";
 
   return (
-    <li className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm transition hover:border-stone-300 hover:bg-stone-50/50 sm:p-5">
+    <li className="rounded-[1.5rem] border border-[var(--border)] bg-white p-4 shadow-[0_22px_46px_-40px_rgba(15,23,42,0.24)] transition hover:border-[var(--border-strong)] hover:bg-slate-50/60 sm:p-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 space-y-2">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm font-semibold text-stone-950">
+            <h3 className="text-sm font-semibold text-slate-950">
               {asset.title}
             </h3>
             <StatusBadge status={asset.status} />
           </div>
-          <p className="text-sm text-stone-600">{asset.seller.company}</p>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-stone-600">
+          <p className="text-sm text-slate-600">{asset.seller.company}</p>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600">
             <span>{asset.country}</span>
             <span className="text-stone-300">|</span>
             <span>{asset.category}</span>
@@ -38,17 +38,17 @@ export function AdminAssetCard({
         </div>
 
         <div className="flex flex-col items-start gap-2 lg:items-end">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+          <p className="text-[0.72rem] font-semibold text-slate-500">
             Asking price
           </p>
-          <p className="text-xl font-semibold text-stone-950">
+          <p className="text-xl font-semibold text-slate-950">
             {formatCurrency(asset.askingPrice, asset.currency)}
           </p>
         </div>
       </div>
 
-      <div className="mt-4 flex justify-between items-center gap-2 border-t border-stone-200 pt-4">
-        <span className="inline-flex items-center rounded-full border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-stone-600">
+      <div className="mt-4 flex items-center justify-between gap-2 border-t border-[var(--border)] pt-4">
+        <span className="inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-1.5 text-[0.72rem] font-semibold text-slate-600">
           Seller context: {asset.seller.company}
         </span>
 

@@ -97,7 +97,7 @@ export default async function BuyerDetailPage({
           actions={
             <Link
               href="/buyers"
-              className="inline-flex items-center rounded-full border border-stone-300 bg-white px-3 py-1.5 text-sm font-medium text-stone-700 transition hover:bg-stone-100"
+              className="inline-flex items-center rounded-full border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition hover:border-[var(--border-strong)] hover:bg-slate-50"
             >
               Back to buyer directory
             </Link>
@@ -105,22 +105,22 @@ export default async function BuyerDetailPage({
         />
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(320px,0.9fr)]">
-          <section className="space-y-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
+          <section className="space-y-6 rounded-[1.75rem] border border-[var(--border)] bg-white p-5 shadow-[0_30px_60px_-40px_rgba(15,23,42,0.28)] sm:p-6">
             <div className="flex flex-wrap items-center gap-2">
               <StatusBadge status="ACTIVE" />
-              <span className="rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-stone-600">
+              <span className="rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-2.5 py-1 text-[0.72rem] font-semibold text-slate-600">
                 {buyer.country}
               </span>
             </div>
 
             <div className="space-y-2">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500">
+              <p className="text-[0.72rem] font-semibold text-slate-500">
                 Company
               </p>
-              <h2 className="text-2xl font-semibold tracking-tight text-stone-950">
+              <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
                 {buyer.company}
               </h2>
-              <p className="text-sm text-stone-600">
+              <p className="text-sm text-slate-600">
                 Updated {formatDate(buyer.updatedAt)}
               </p>
             </div>
@@ -136,20 +136,20 @@ export default async function BuyerDetailPage({
               )}
             </div>
 
-            <section className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500">
+            <section className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-muted)] p-5">
+              <p className="text-[0.72rem] font-semibold text-slate-500">
                 Bio
               </p>
-              <p className="mt-2 whitespace-pre-line text-sm leading-6 text-stone-600">
+              <p className="mt-2 whitespace-pre-line text-sm leading-7 text-slate-600">
                 {buyer.buyerProfile.bio}
               </p>
             </section>
 
-            <section className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500">
+            <section className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-muted)] p-5">
+              <p className="text-[0.72rem] font-semibold text-slate-500">
                 Investment thesis
               </p>
-              <p className="mt-2 whitespace-pre-line text-sm leading-6 text-stone-600">
+              <p className="mt-2 whitespace-pre-line text-sm leading-7 text-slate-600">
                 {buyer.buyerProfile.investmentThesis}
               </p>
             </section>
@@ -168,8 +168,8 @@ export default async function BuyerDetailPage({
               submitLabel="Contact buyer"
             />
 
-            <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500">
+            <section className="rounded-[1.75rem] border border-[var(--border)] bg-white p-5 shadow-[0_30px_60px_-40px_rgba(15,23,42,0.28)] sm:p-6">
+              <p className="text-[0.72rem] font-semibold text-slate-500">
                 Preferred countries
               </p>
               <div className="mt-3">
@@ -177,8 +177,8 @@ export default async function BuyerDetailPage({
               </div>
             </section>
 
-            <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500">
+            <section className="rounded-[1.75rem] border border-[var(--border)] bg-white p-5 shadow-[0_30px_60px_-40px_rgba(15,23,42,0.28)] sm:p-6">
+              <p className="text-[0.72rem] font-semibold text-slate-500">
                 Preferred categories
               </p>
               <div className="mt-3">

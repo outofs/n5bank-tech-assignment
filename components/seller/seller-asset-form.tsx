@@ -15,11 +15,11 @@ import type {
 import { SellerAssetSelectFields } from "./seller-asset-select-fields";
 
 const INPUT_CLASS =
-  "h-11 w-full rounded-xl border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition placeholder:text-stone-400 focus:border-stone-500";
+  "h-11 w-full rounded-full border border-[var(--border)] bg-white px-4 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-[var(--accent)] focus:ring-4 focus:ring-indigo-100";
 const TEXTAREA_CLASS =
-  "min-h-28 w-full rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-sm text-stone-950 outline-none transition placeholder:text-stone-400 focus:border-stone-500";
+  "min-h-28 w-full rounded-[1.5rem] border border-[var(--border)] bg-white px-4 py-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-[var(--accent)] focus:ring-4 focus:ring-indigo-100";
 const LABEL_CLASS =
-  "text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500";
+  "text-[0.72rem] font-semibold text-slate-500";
 
 function SubmitButton({
   intent,
@@ -40,8 +40,8 @@ function SubmitButton({
       disabled={pending}
       className={
         tone === "primary"
-          ? "inline-flex h-11 items-center justify-center rounded-xl bg-stone-950 px-4 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
-          : "inline-flex h-11 items-center justify-center rounded-xl border border-stone-300 bg-white px-4 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-60"
+          ? "inline-flex h-11 items-center justify-center rounded-full bg-[var(--accent)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)] disabled:cursor-not-allowed disabled:opacity-60"
+          : "inline-flex h-11 items-center justify-center rounded-full border border-[var(--border)] bg-white px-5 text-sm font-semibold text-slate-700 transition hover:border-[var(--border-strong)] hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
       }
     >
       {pending ? "Saving..." : children}
@@ -165,7 +165,7 @@ export function SellerAssetForm({
       ) : null}
 
       {currentState.errors.form ? (
-        <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+        <div className="rounded-[1.25rem] border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
           {currentState.errors.form}
         </div>
       ) : null}
@@ -187,7 +187,6 @@ export function SellerAssetForm({
           </FormField>
         </div>
 
-        <div className="sm:col-span-2">
         <div className="sm:col-span-2">
           <SellerAssetSelectFields
             country={values.country}
@@ -224,7 +223,6 @@ export function SellerAssetForm({
               setValues((current) => ({ ...current, licenseType }))
             }
           />
-        </div>
         </div>
 
         <FormField label="Asking price" error={currentState.errors.askingPrice}>
@@ -298,7 +296,7 @@ export function SellerAssetForm({
         />
       </FormField>
 
-      <div className="flex flex-wrap items-center gap-3 border-t border-stone-200 pt-4">
+      <div className="flex flex-wrap items-center gap-3 border-t border-[var(--border)] pt-4">
         {submitActions.map((action) => (
           <SubmitButton
             key={action.intent}
@@ -310,7 +308,7 @@ export function SellerAssetForm({
         ))}
         <Link
           href={cancelHref}
-          className="inline-flex h-11 items-center justify-center rounded-xl border border-stone-300 bg-white px-4 text-sm font-semibold text-stone-700 transition hover:bg-stone-100"
+          className="inline-flex h-11 items-center justify-center rounded-full border border-[var(--border)] bg-white px-5 text-sm font-semibold text-slate-700 transition hover:border-[var(--border-strong)] hover:bg-slate-50"
         >
           Cancel
         </Link>

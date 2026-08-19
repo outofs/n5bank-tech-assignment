@@ -3,13 +3,13 @@ type StatusBadgeProps = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  ACTIVE: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  PUBLISHED: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  SUSPENDED: "border-rose-200 bg-rose-50 text-rose-800",
-  DRAFT: "border-amber-200 bg-amber-50 text-amber-800",
+  ACTIVE: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  PUBLISHED: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  SUSPENDED: "border-rose-200 bg-rose-50 text-rose-700",
+  DRAFT: "border-amber-200 bg-amber-50 text-amber-700",
   PENDING: "border-slate-200 bg-slate-100 text-slate-700",
-  ACCEPTED: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  DECLINED: "border-rose-200 bg-rose-50 text-rose-800",
+  ACCEPTED: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  DECLINED: "border-rose-200 bg-rose-50 text-rose-700",
 };
 
 export function StatusBadge({ status }: StatusBadgeProps) {
@@ -20,7 +20,7 @@ export function StatusBadge({ status }: StatusBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${tone}`}
+      className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[0.72rem] font-semibold ${tone}`}
     >
       {status}
     </span>
