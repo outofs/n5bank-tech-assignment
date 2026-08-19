@@ -7,8 +7,7 @@ import type { SingleValue } from "react-select";
 import { createSharedSelectStyles } from "@/lib/select-styles";
 import { toSelectOption, type SelectOption } from "@/lib/select-options";
 
-const FIELD_LABEL_CLASS =
-  "text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500";
+const FIELD_LABEL_CLASS = "text-[0.72rem] font-semibold text-slate-500";
 
 export type FilterSelectOption = SelectOption;
 

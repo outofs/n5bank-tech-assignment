@@ -73,36 +73,36 @@ export function ContactRequestCard({
   const counterpart = direction === "sent" ? request.recipient : request.sender;
 
   return (
-    <article className="rounded-2xl border border-stone-200 bg-white p-4 transition hover:border-stone-300 hover:bg-stone-50/50 sm:p-5">
+    <article className="bg-white px-4 py-4 transition hover:bg-slate-50/70 sm:px-5 sm:py-4.5">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-sm font-semibold text-stone-950">{counterpart.name}</h3>
+              <h3 className="text-sm font-semibold text-slate-950">{counterpart.name}</h3>
               <span
                 className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${directionTone(direction)}`}
               >
                 {direction === "sent" ? "Sent" : "Received"}
               </span>
             </div>
-            <p className="text-sm text-stone-600">{counterpart.company}</p>
+            <p className="text-sm text-slate-600">{counterpart.company}</p>
           </div>
 
           <div className="flex shrink-0 flex-col items-start gap-1 sm:items-end">
-            <p className="text-xs uppercase tracking-[0.18em] text-stone-500">
+            <p className="text-xs text-slate-500">
               {formatDateTime(request.createdAt)}
             </p>
-            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-stone-400">
+            <p className="text-[0.72rem] font-medium text-slate-400">
               {request.status}
             </p>
           </div>
         </div>
 
-        <div className="space-y-1 text-sm leading-6 text-stone-700">
+        <div className="space-y-1 text-sm leading-6 text-slate-700">
           <p>
             <AssetContextLink request={request} currentUser={currentUser} />
           </p>
-          <p className="max-w-3xl text-stone-600">{truncateMessage(request.message)}</p>
+          <p className="max-w-3xl text-slate-600">{truncateMessage(request.message)}</p>
         </div>
       </div>
     </article>

@@ -34,16 +34,16 @@ export function SellerAssetsList({
 
   return (
     <section className="grid gap-4">
-      <section className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-wrap items-center gap-2 text-sm text-stone-600">
-          <span className="font-medium text-stone-800">DRAFT</span>
-          <span className="text-stone-300">hidden from buyers</span>
-          <span className="text-stone-300">|</span>
-          <span className="font-medium text-stone-800">PUBLISHED</span>
-          <span className="text-stone-300">visible in the marketplace</span>
-          <span className="text-stone-300">|</span>
-          <span className="font-medium text-stone-800">SUSPENDED</span>
-          <span className="text-stone-300">under review</span>
+      <section className="rounded-[1.5rem] border border-[var(--border)] bg-white p-4 shadow-[0_30px_60px_-44px_rgba(15,23,42,0.35)]">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-slate-600">
+          <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[0.72rem] font-semibold text-amber-700">Draft</span>
+          <span>Hidden from buyers</span>
+          <span className="text-slate-300">|</span>
+          <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[0.72rem] font-semibold text-emerald-700">Published</span>
+          <span>Visible in marketplace</span>
+          <span className="text-slate-300">|</span>
+          <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[0.72rem] font-semibold text-rose-700">Suspended</span>
+          <span>Under review</span>
         </div>
       </section>
 

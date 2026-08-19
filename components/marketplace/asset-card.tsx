@@ -20,54 +20,64 @@ export function AssetCard({ href, asset, smartMatch }: AssetCardProps) {
   return (
     <Link
       href={href}
-      className="group flex h-full flex-col rounded-2xl border border-stone-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 sm:p-5"
+      className="group flex h-full flex-col rounded-[1.75rem] border border-[var(--border)] bg-white p-5 shadow-[0_26px_60px_-42px_rgba(15,23,42,0.35)] transition hover:-translate-y-0.5 hover:border-[var(--border-strong)] hover:shadow-[0_30px_60px_-38px_rgba(15,23,42,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
     >
       <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
+        <div className="min-w-0 space-y-3">
           <div className="flex flex-wrap gap-2">
-            <span className="rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-stone-600">
+            <span className="rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-2.5 py-1 text-[0.72rem] font-semibold text-slate-600">
               {asset.country}
+            </span>
+            <span className="rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-2.5 py-1 text-[0.72rem] font-semibold text-slate-600">
+              {asset.category}
             </span>
             {smartMatch ? <SmartMatchBadge score={smartMatch.score} /> : null}
           </div>
-          <h2 className="text-lg font-semibold tracking-tight text-stone-950">
+          <h2 className="text-xl font-semibold tracking-tight text-slate-950">
             {asset.title}
           </h2>
         </div>
 
-        <span className="text-sm font-semibold text-stone-400 transition group-hover:text-stone-700">
-          View
+        <span className="rounded-full border border-[var(--border)] px-3 py-1.5 text-xs font-semibold text-slate-500 transition group-hover:border-indigo-200 group-hover:text-indigo-700">
+          View Asset
         </span>
       </div>
 
-      <div className="mt-4 flex flex-1 flex-col space-y-4">
-        <div className="flex flex-wrap items-center gap-2 text-sm text-stone-600">
-          <span>{asset.category}</span>
-          <span className="text-stone-300">|</span>
-          <span>{asset.businessStatus}</span>
-          {asset.licenseType ? (
-            <>
-              <span className="text-stone-300">|</span>
-              <span>{asset.licenseType}</span>
-            </>
-          ) : null}
+      <div className="mt-5 flex flex-1 flex-col gap-4">
+        <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2.5">
+            <p className="text-[0.68rem] font-semibold text-slate-500">Status</p>
+            <p className="mt-1 text-sm font-medium text-slate-900">{asset.businessStatus}</p>
+          </div>
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2.5">
+            <p className="text-[0.68rem] font-semibold text-slate-500">License</p>
+            <p className="mt-1 line-clamp-2 text-sm font-medium text-slate-900">
+              {asset.licenseType || "Not listed"}
+            </p>
+          </div>
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2.5">
+            <p className="text-[0.68rem] font-semibold text-slate-500">Listed</p>
+            <p className="mt-1 text-sm font-medium text-slate-900">
+              {formatDate(asset.createdAt)}
+            </p>
+          </div>
         </div>
 
-        <div className="flex items-baseline justify-between gap-4 border-t border-stone-200 pt-4">
+        <div className="flex items-end justify-between gap-4 border-t border-[var(--border)] pt-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+            <p className="text-[0.72rem] font-semibold text-slate-500">
               Asking price
             </p>
-            <p className="mt-1 text-xl font-semibold text-stone-950">
+            <p className="mt-1 text-2xl font-semibold text-indigo-700">
               {formatCurrency(asset.askingPrice, asset.currency)}
             </p>
           </div>
-          <p className="text-right text-xs uppercase tracking-[0.18em] text-stone-500">
+          <p className="text-right text-xs text-slate-500">
             Created {formatDate(asset.createdAt)}
           </p>
         </div>
 
-        <p className="min-h-12 text-sm leading-6 text-stone-600">
+        <p className="min-h-12 text-sm leading-6 text-slate-600">
           {truncateDescription(asset.description)}
         </p>
       </div>

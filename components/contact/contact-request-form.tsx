@@ -9,7 +9,7 @@ import {
 } from "@/lib/contact-request";
 
 const TEXTAREA_CLASS =
-  "min-h-28 w-full rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-sm text-stone-950 outline-none transition placeholder:text-stone-400 focus:border-stone-500";
+  "min-h-28 w-full rounded-3xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-slate-950 outline-none placeholder:text-slate-400 focus:border-[var(--accent)] focus:ring-4 focus:ring-indigo-100";
 
 type ContactRequestAction = (
   state: ContactRequestFormState,
@@ -44,8 +44,8 @@ function SubmitButton({
       disabled={pending}
       className={
         tone === "dark"
-          ? "inline-flex h-11 items-center justify-center rounded-xl bg-white px-4 text-sm font-semibold text-stone-950 transition hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-60"
-          : "inline-flex h-11 items-center justify-center rounded-xl bg-stone-950 px-4 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
+          ? "inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-slate-950 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
+          : "inline-flex h-11 items-center justify-center rounded-full bg-[var(--accent)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)] disabled:cursor-not-allowed disabled:opacity-60"
       }
     >
       {pending ? "Sending..." : label}
@@ -74,15 +74,15 @@ export function ContactRequestForm({
     <div
       className={
         tone === "dark"
-          ? "rounded-2xl border border-stone-200 bg-stone-950 p-5 text-white shadow-sm sm:p-6"
-          : "rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6"
+          ? "rounded-[1.75rem] border border-slate-900 bg-slate-950 p-5 text-white shadow-[0_30px_60px_-36px_rgba(15,23,42,0.8)] sm:p-6"
+          : "rounded-[1.75rem] border border-[var(--border)] bg-white p-5 shadow-[0_30px_60px_-40px_rgba(15,23,42,0.28)] sm:p-6"
       }
     >
       <p
         className={
           tone === "dark"
-            ? "text-xs font-semibold uppercase tracking-[0.22em] text-stone-300"
-            : "text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500"
+            ? "text-[0.72rem] font-semibold text-slate-300"
+            : "text-[0.72rem] font-semibold text-slate-500"
         }
       >
         Contact action
@@ -93,7 +93,7 @@ export function ContactRequestForm({
           {submitLabel}
         </h2>
         <p className={tone === "dark" ? "text-sm text-stone-300" : "text-sm text-stone-600"}>
-          {recipientName} · {recipientCompany}
+          {recipientName} | {recipientCompany}
         </p>
         <p className={tone === "dark" ? "text-sm text-stone-300" : "text-sm text-stone-600"}>
           {recipientRoleLabel}
@@ -114,8 +114,8 @@ export function ContactRequestForm({
           <div
             className={
               tone === "dark"
-                ? "rounded-xl border border-emerald-400/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100"
-                : "rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900"
+                ? "rounded-3xl border border-emerald-400/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100"
+                : "rounded-3xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900"
             }
           >
             {state.successMessage}
@@ -126,8 +126,8 @@ export function ContactRequestForm({
           <div
             className={
               tone === "dark"
-                ? "rounded-xl border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-100"
-                : "rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800"
+                ? "rounded-3xl border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-100"
+                : "rounded-3xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800"
             }
           >
             {state.errors.form}
@@ -138,8 +138,8 @@ export function ContactRequestForm({
           <span
             className={
               tone === "dark"
-                ? "text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-300"
-                : "text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500"
+                ? "text-[0.72rem] font-semibold text-slate-300"
+                : "text-[0.72rem] font-semibold text-slate-500"
             }
           >
             Message

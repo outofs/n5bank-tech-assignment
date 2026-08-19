@@ -92,14 +92,14 @@ export default async function MessagesPage({
   ];
 
   return (
-    <main className="bg-stone-50/80">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <main>
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
         <PageHeader
           eyebrow="Inbox"
           title="Messages"
-          description="Contact requests sent and received by the current demo user, scoped directly from PostgreSQL."
+          description="Contact requests sent and received by the current demo user, refined into a tighter inbox list without changing the compact request model."
           actions={
-            <div className="inline-flex items-center rounded-full border border-stone-200 bg-white px-3 py-1.5 text-sm font-medium text-stone-700">
+            <div className="inline-flex items-center rounded-full border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-medium text-slate-700">
               {visibleCount} shown
             </div>
           }
@@ -126,9 +126,9 @@ export default async function MessagesPage({
               }
             />
           ) : (
-            <ul className="space-y-3">
+            <ul className="overflow-hidden rounded-[1.5rem] border border-[var(--border)] bg-white shadow-[0_24px_50px_-40px_rgba(15,23,42,0.3)]">
               {visibleRequests.map((request) => (
-                <li key={request.id}>
+                <li key={request.id} className="border-b border-[var(--border)] last:border-b-0">
                   <ContactRequestCard
                     request={request}
                     direction={request.senderId === currentUser.id ? "sent" : "received"}

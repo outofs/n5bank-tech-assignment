@@ -29,11 +29,11 @@ export function AdminUserCard({
   const isActive = user.status === "ACTIVE";
 
   return (
-    <li className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm transition hover:border-stone-300 hover:bg-stone-50/50 sm:p-5">
+    <li className="rounded-[1.5rem] border border-[var(--border)] bg-white p-4 shadow-[0_22px_46px_-40px_rgba(15,23,42,0.24)] transition hover:border-[var(--border-strong)] hover:bg-slate-50/60 sm:p-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 space-y-2">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm font-semibold text-stone-950">{user.name}</h3>
+            <h3 className="text-sm font-semibold text-slate-950">{user.name}</h3>
             <span
               className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${roleTone(
                 user.role,
@@ -43,8 +43,8 @@ export function AdminUserCard({
             </span>
             <StatusBadge status={user.status} />
           </div>
-          <p className="text-sm text-stone-600">{user.company}</p>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-stone-600">
+          <p className="text-sm text-slate-600">{user.company}</p>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600">
             <span>{user.country}</span>
             <span className="text-stone-300">|</span>
             <span>Joined {formatDate(user.createdAt)}</span>

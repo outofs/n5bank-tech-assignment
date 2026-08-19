@@ -82,22 +82,22 @@ export default async function SellerAssetsPage({
         : "";
 
   return (
-    <main className="bg-stone-50/80">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <main>
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
         <SellerFeedbackBanner message={successMessage} />
 
         <PageHeader
           eyebrow="Seller assets"
           title="My assets"
-          description="Assets owned by the active Seller demo identity, ordered by the most recent update."
+          description="Assets owned by the active Seller demo identity, with a cleaner portfolio-management presentation and unchanged workflows."
           actions={
             <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center rounded-full border border-stone-200 bg-white px-3 py-1.5 text-sm font-medium text-stone-700">
+              <div className="inline-flex items-center rounded-full border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-medium text-slate-700">
                 {assetCount} owned assets
               </div>
               <Link
                 href="/seller/assets/new"
-                className="inline-flex items-center rounded-full border border-stone-950 bg-stone-950 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-stone-800"
+                className="inline-flex items-center rounded-full border border-[var(--accent)] bg-[var(--accent)] px-3.5 py-2 text-sm font-medium text-white transition hover:bg-[var(--accent-strong)]"
               >
                 Create asset
               </Link>

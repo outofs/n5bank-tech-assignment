@@ -213,21 +213,21 @@ export default async function BuyersPage({
   });
 
   return (
-    <main className="bg-stone-50/80">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <main>
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
         <PageHeader
           eyebrow="Seller directory"
           title="Buyers"
-          description="Active buyers with profile data from PostgreSQL, filtered server-side and ordered by the most recent update."
+          description="Active buyers with profile data from PostgreSQL, presented with the same compact marketplace language used across listings."
           actions={
             <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center rounded-full border border-stone-200 bg-white px-3 py-1.5 text-sm font-medium text-stone-700">
+              <div className="inline-flex items-center rounded-full border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-medium text-slate-700">
                 {visibleCount} matching buyers
               </div>
               {hasActiveFilters ? (
                 <Link
                   href="/buyers"
-                  className="inline-flex items-center rounded-full border border-stone-300 bg-white px-3 py-1.5 text-sm font-medium text-stone-700 transition hover:bg-stone-100"
+                  className="inline-flex items-center rounded-full border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition hover:border-[var(--border-strong)] hover:bg-slate-50"
                 >
                   Reset filters
                 </Link>
@@ -262,7 +262,7 @@ export default async function BuyersPage({
               hasActiveFilters ? (
                 <Link
                   href="/buyers"
-                  className="inline-flex items-center rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-100"
+                  className="inline-flex items-center rounded-full border border-[var(--border)] bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-[var(--border-strong)] hover:bg-slate-50"
                 >
                   Reset filters
                 </Link>
@@ -270,7 +270,7 @@ export default async function BuyersPage({
             }
           />
         ) : (
-          <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <section className="grid gap-4 xl:grid-cols-2">
             {visibleBuyers.map((buyer) => (
               <BuyerCard
                 key={buyer.id}

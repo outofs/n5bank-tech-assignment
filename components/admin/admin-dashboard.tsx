@@ -20,14 +20,14 @@ export function AdminDashboard({
   recentUsers,
 }: AdminDashboardProps) {
   return (
-    <main className="bg-stone-50/80">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <main>
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
         <PageHeader
           eyebrow="Platform manager"
           title="Admin dashboard"
-          description={`Operational overview for ${company}, loaded server-side from PostgreSQL for the active manager session.`}
+          description={`Operational overview for ${company}, using the same visual tokens as the marketplace while staying denser and more utilitarian.`}
           actions={
-            <div className="inline-flex items-center rounded-full border border-stone-200 bg-white px-3 py-1.5 text-sm font-medium text-stone-700">
+            <div className="inline-flex items-center rounded-full border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-medium text-slate-700">
               {metrics.reduce((sum, metric) => sum + metric.value, 0)} tracked records
             </div>
           }

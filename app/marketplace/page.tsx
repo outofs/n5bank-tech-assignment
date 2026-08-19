@@ -39,9 +39,9 @@ const SORT_OPTIONS = [
   { value: "price-desc", label: "Price high to low" },
 ] as const;
 const FIELD_LABEL_CLASS =
-  "text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500";
+  "text-[0.72rem] font-semibold text-slate-500";
 const CONTROL_CLASS =
-  "h-11 w-full rounded-xl border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition placeholder:text-stone-400 focus:border-stone-500";
+  "h-11 w-full rounded-full border border-[var(--border)] bg-white px-4 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-[var(--accent)] focus:ring-4 focus:ring-indigo-100";
 
 function firstParam(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
@@ -221,21 +221,21 @@ export default async function MarketplacePage({
   );
 
   return (
-    <main className="bg-stone-50/80">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <main>
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
         <PageHeader
           eyebrow="Buyer marketplace"
           title="Available assets"
-          description="Published opportunities from active sellers, filtered directly from PostgreSQL."
+          description="Published opportunities from active sellers with compact filters, smart-match context, and information-dense listing cards."
           actions={
             <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center rounded-full border border-stone-200 bg-white px-3 py-1.5 text-sm font-medium text-stone-700">
+              <div className="inline-flex items-center rounded-full border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-medium text-slate-700">
                 {visibleCount} matching assets
               </div>
               {hasActiveFilters ? (
                 <Link
                   href="/marketplace"
-                  className="inline-flex items-center rounded-full border border-stone-300 bg-white px-3 py-1.5 text-sm font-medium text-stone-700 transition hover:bg-stone-100"
+                  className="inline-flex items-center rounded-full border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition hover:border-[var(--border-strong)] hover:bg-slate-50"
                 >
                   Reset filters
                 </Link>
@@ -248,11 +248,11 @@ export default async function MarketplacePage({
           <SmartMatchPanel match={null} ctaHref="/profile/edit" />
         ) : null}
 
-        <section className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+        <section className="rounded-[1.75rem] border border-[var(--border)] bg-white p-4 shadow-[0_30px_60px_-42px_rgba(15,23,42,0.35)]">
           <form
             method="get"
             action="/marketplace"
-            className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5"
+            className="grid gap-3 xl:grid-cols-[minmax(0,1.35fr)_repeat(4,minmax(0,0.82fr))]"
           >
             <label className="flex min-w-0 flex-col gap-1.5 xl:col-span-2">
               <span className={FIELD_LABEL_CLASS}>Search</span>
@@ -325,16 +325,16 @@ export default async function MarketplacePage({
 
             <div className="flex flex-col gap-2 sm:col-span-2 xl:col-span-2 xl:justify-end">
               <span className={FIELD_LABEL_CLASS}>Actions</span>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <button
                   type="submit"
-                  className="inline-flex h-11 flex-1 items-center justify-center rounded-xl bg-stone-950 px-4 text-sm font-semibold text-white transition hover:bg-stone-800 sm:flex-none"
+                  className="inline-flex h-11 flex-1 items-center justify-center rounded-full bg-[var(--accent)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)] sm:flex-none"
                 >
                   Apply filters
                 </button>
                 <Link
                   href="/marketplace"
-                  className="inline-flex h-11 flex-1 items-center justify-center rounded-xl border border-stone-300 bg-white px-4 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 sm:flex-none"
+                  className="inline-flex h-11 flex-1 items-center justify-center rounded-full border border-[var(--border)] bg-white px-5 text-sm font-semibold text-slate-700 transition hover:border-[var(--border-strong)] hover:bg-slate-50 sm:flex-none"
                 >
                   Reset
                 </Link>
@@ -359,7 +359,7 @@ export default async function MarketplacePage({
               hasActiveFilters ? (
                 <Link
                   href="/marketplace"
-                  className="inline-flex items-center rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-100"
+                  className="inline-flex items-center rounded-full border border-[var(--border)] bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-[var(--border-strong)] hover:bg-slate-50"
                 >
                   Reset filters
                 </Link>
@@ -367,7 +367,7 @@ export default async function MarketplacePage({
             }
           />
         ) : (
-          <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          <section className="grid gap-4 xl:grid-cols-2">
             {visibleAssets.map((asset) => (
               <AssetCard
                 key={asset.id}

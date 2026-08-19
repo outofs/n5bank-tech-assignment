@@ -50,24 +50,24 @@ export function SellerAssetCard({
   editHref,
 }: SellerAssetCardProps) {
   return (
-    <article className={`rounded-2xl border p-5 shadow-sm ${statusTone(status)}`}>
+    <article className={`rounded-[1.75rem] border p-5 shadow-[0_26px_60px_-42px_rgba(15,23,42,0.35)] ${statusTone(status)}`}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge status={status} />
-            <span className="rounded-full border border-stone-200 bg-white px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-stone-600">
+            <span className="rounded-full border border-[var(--border)] bg-white px-2.5 py-1 text-[0.72rem] font-semibold text-slate-600">
               {country}
             </span>
-            <span className="rounded-full border border-stone-200 bg-white px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-stone-600">
+            <span className="rounded-full border border-[var(--border)] bg-white px-2.5 py-1 text-[0.72rem] font-semibold text-slate-600">
               {category}
             </span>
           </div>
 
           <div className="space-y-1">
-            <h2 className="text-lg font-semibold tracking-tight text-stone-950">
+            <h2 className="text-xl font-semibold tracking-tight text-slate-950">
               {title}
             </h2>
-            <p className="text-sm text-stone-600">{statusDescription(status)}</p>
+            <p className="text-sm text-slate-600">{statusDescription(status)}</p>
           </div>
         </div>
 
@@ -75,20 +75,20 @@ export function SellerAssetCard({
           {editHref ? (
             <Link
               href={editHref}
-              className="inline-flex rounded-full border border-stone-300 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-stone-700 transition hover:bg-stone-100"
+              className="inline-flex rounded-full border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:border-[var(--border-strong)] hover:bg-slate-50"
             >
               Edit
             </Link>
           ) : null}
 
-          <div className="rounded-2xl border border-stone-200 bg-white px-4 py-3 sm:min-w-[220px] sm:text-right">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-500">
+          <div className="rounded-[1.5rem] border border-[var(--border)] bg-white px-4 py-4 sm:min-w-[220px] sm:text-right">
+            <p className="text-[0.72rem] font-semibold text-slate-500">
               Asking price
             </p>
-            <p className="mt-1 text-2xl font-semibold text-stone-950">
+            <p className="mt-1 text-2xl font-semibold text-indigo-700">
               {formatCurrency(askingPrice, currency)}
             </p>
-            <p className="mt-1 text-xs uppercase tracking-[0.18em] text-stone-500">
+            <p className="mt-1 text-xs text-slate-500">
               Updated {formatDate(updatedAt)}
             </p>
           </div>

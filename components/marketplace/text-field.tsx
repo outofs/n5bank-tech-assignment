@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
-const FIELD_LABEL_CLASS =
-  "text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500";
+const FIELD_LABEL_CLASS = "text-[0.72rem] font-semibold text-slate-500";
 
 export type TextFieldProps = {
   label: string;

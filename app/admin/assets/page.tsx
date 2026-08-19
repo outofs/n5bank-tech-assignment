@@ -223,20 +223,20 @@ export default async function AdminAssetsPage({
   });
 
   return (
-    <main className="bg-stone-50/80">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <main>
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
         <PageHeader
           eyebrow="Platform manager"
           title="Asset moderation"
-          description="Server-rendered moderation for marketplace assets with seller context and status transitions controlled by the manager session."
+          description="Server-rendered moderation for marketplace assets with denser admin surfaces and unchanged moderation behavior."
           actions={
             <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center rounded-full border border-stone-200 bg-white px-3 py-1.5 text-sm font-medium text-stone-700">
+              <div className="inline-flex items-center rounded-full border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-medium text-slate-700">
                 {visibleCount} matching assets
               </div>
               <Link
                 href="/admin"
-                className="inline-flex items-center rounded-full border border-stone-300 bg-white px-3 py-1.5 text-sm font-medium text-stone-700 transition hover:bg-stone-100"
+                className="inline-flex items-center rounded-full border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition hover:border-[var(--border-strong)] hover:bg-slate-50"
               >
                 Back to dashboard
               </Link>

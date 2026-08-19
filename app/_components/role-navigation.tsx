@@ -114,9 +114,9 @@ function isActivePath(
 }
 
 const ACTIVE_CLASS =
-  "border-stone-950 bg-stone-950 text-white shadow-sm hover:bg-stone-800";
+  "border-[var(--accent)] bg-[var(--accent)] text-white shadow-[0_12px_24px_-18px_rgba(51,92,255,0.75)] hover:bg-[var(--accent-strong)]";
 const INACTIVE_CLASS =
-  "border-stone-200 bg-white text-stone-700 hover:border-stone-300 hover:bg-stone-100";
+  "border-[var(--border)] bg-white text-slate-600 hover:border-[var(--border-strong)] hover:bg-slate-50";
 
 export function RoleNavigation({ role, items }: RoleNavigationProps) {
   const pathname = usePathname();
@@ -130,7 +130,7 @@ export function RoleNavigation({ role, items }: RoleNavigationProps) {
           return (
             <span
               key={label}
-              className="rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700"
+              className="rounded-full border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-medium text-slate-600"
             >
               {label}
             </span>
@@ -144,7 +144,7 @@ export function RoleNavigation({ role, items }: RoleNavigationProps) {
             key={label}
             href={item.href}
             aria-current={isActive ? "page" : undefined}
-            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+            className={`rounded-full border px-3.5 py-2 text-sm font-medium transition ${
               isActive ? ACTIVE_CLASS : INACTIVE_CLASS
             }`}
           >
